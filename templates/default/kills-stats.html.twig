@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="jumbotron shadow">
+            <h1>Kills stats</h1>
+            <p class="m-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur atque blanditiis iste
+                laboriosam
+                maxime minima minus, nemo, nihil placeat praesentium reiciendis, sapiente sunt suscipit temporibus
+                voluptates? Debitis deserunt dolore illum.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_start(form) }}
+                {{ form_row(form.cookie) }}
+                {{ form_row(form.profiles) }}
+                <button type="submit" class="btn btn-outline-primary">Rechercher</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        {% if stats %}
+            <table class="table table-hovered stats">
+                <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Nom</td>
+                    <td>Kills</td>
+                    <td>Monney</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stat in stats %}
+                    <tr>
+                        <td>{{ stat.id }}</td>
+                        <td>{{ stat.name }}</td>
+                        <td>{{ stat.kills }}</td>
+                        <td>{{ stat.money }} €</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}
