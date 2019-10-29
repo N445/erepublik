@@ -35,9 +35,14 @@ class Profile
     private $umName;
 
     /**
+     * @var bool
+     */
+    private $valid = true;
+
+    /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -46,7 +51,7 @@ class Profile
      * @param string $name
      * @return Profile
      */
-    public function setName(string $name): Profile
+    public function setName($name): Profile
     {
         $this->name = $name;
         return $this;
@@ -73,7 +78,7 @@ class Profile
     /**
      * @return int
      */
-    public function getKills(): int
+    public function getKills()
     {
         return $this->kills;
     }
@@ -99,7 +104,7 @@ class Profile
     /**
      * @return int
      */
-    public function getMoney(): int
+    public function getMoney()
     {
         return $this->money;
     }
@@ -116,7 +121,7 @@ class Profile
     /**
      * @return int
      */
-    public function getUmId(): int
+    public function getUmId()
     {
         return $this->umId;
     }
@@ -134,7 +139,7 @@ class Profile
     /**
      * @return string
      */
-    public function getUmName(): string
+    public function getUmName()
     {
         return $this->umName;
     }
@@ -146,6 +151,24 @@ class Profile
     public function setUmName(string $umName): Profile
     {
         $this->umName = $umName;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        return $this->valid;
+    }
+
+    /**
+     * @param bool $valid
+     * @return Profile
+     */
+    public function setValid(bool $valid): Profile
+    {
+        $this->valid = $valid;
         return $this;
     }
 }

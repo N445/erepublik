@@ -9,3 +9,4 @@
 ###< symfony/framework-bundle ###
 
 .idea
+!/var/data/sma-players.csv

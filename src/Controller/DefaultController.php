@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\KillsStats\SearchType;
 use App\Model\KillsStats\Search;
 use App\Service\Erepublik\KillsStats;
+use App\Utils\KillStats\CsvToProfiles;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,12 +19,19 @@ class DefaultController extends AbstractController
     private $killsStatsService;
 
     /**
-     * DefaultController constructor.
-     * @param KillsStats $killsStats
+     * @var CsvToProfiles
      */
-    public function __construct(KillsStats $killsStats)
+    private $csvToProfiles;
+
+    /**
+     * DefaultController constructor.
+     * @param KillsStats    $killsStats
+     * @param CsvToProfiles $csvToProfiles
+     */
+    public function __construct(KillsStats $killsStats, CsvToProfiles $csvToProfiles)
     {
         $this->killsStatsService = $killsStats;
+        $this->csvToProfiles     = $csvToProfiles;
     }
 
     /**
@@ -31,12 +39,6 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-//        $this->killsStats->setProfilesAndUmIds([
-//            '9541670',
-//            '8612563',
-//        ])->setCookie('fgc2eo5opmid7ecdp105pq9521')
-//        ;
-//        dump($this->killsStats->run());
         return $this->render('default/index.html.twig', [
             'controller_name' => 'DefaultController',
         ]);
@@ -51,8 +53,10 @@ class DefaultController extends AbstractController
         $form   = $this->createForm(SearchType::class, $search);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $search->setProfiles($this->csvToProfiles->getProfilesFromCsv($form->get('file')));
             $this->killsStatsService->setProfilesAndUmIds($search->getProfiles())
                                     ->setCookie($search->getCookie())
+                                    ->setSemaine($search->getSemaine())
             ;
             $stats = $this->killsStatsService->run();
         }

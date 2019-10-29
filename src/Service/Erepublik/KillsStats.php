@@ -65,36 +65,6 @@ class KillsStats
         return $this->profiles;
     }
 
-    /**
-     * @param array $profilesIds
-     * @return KillsStats
-     * @throws InvalidArgumentException
-     */
-    public function setProfilesAndUmIds(array $profilesIds): KillsStats
-    {
-        foreach ($profilesIds as $profilesId) {
-            $profile = $this->getProfileById($profilesId);;
-            $this->profiles[$profilesId]      = $profile;
-            $this->umIds[$profile->getUmId()] = $profile->getUmName();
-        }
-        return $this;
-    }
-
-    /**
-     * @param $value
-     * @return KillsStats
-     */
-    public function setCookie($value): KillsStats
-    {
-        $setCookie = new SetCookie();
-        $setCookie->setPath('/');
-        $setCookie->setDomain('.erepublik.com');
-        $setCookie->setName('erpk');
-        $setCookie->setValue($value);
-        $this->cookie = new CookieJar();
-        $this->cookie->setCookie($setCookie);
-        return $this;
-    }
 
     /**
      * @return \Generator
@@ -136,35 +106,30 @@ class KillsStats
     }
 
     /**
-     * @param $id
+     * @param Profile $profile
      * @return Profile
      * @throws InvalidArgumentException
      */
-    private function getProfileById($id)
+    private function getProfile(Profile $profile)
     {
-        return $this->cache->get($id, function (ItemInterface $item) use ($id) {
+        return $this->cache->get($profile->getId(), function (ItemInterface $item) use ($profile) {
+
             $item->expiresAfter(3600);
-            $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $id));
+            $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $profile->getId()));
             $json        = $response->getBody()->getContents();
             $profileData = json_decode($json);
+            $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name);
+            if ($profileData->isBanned) {
+                $profile->setValid(false);
+                return $profile;
+            }
 
-            $profile = new Profile();
-            $profile->setId($id)
-                    ->setName($profileData->citizen->name)
-                    ->setUmId($profileData->military->militaryUnit->id)
+            $profile->setUmId($profileData->military->militaryUnit->id)
                     ->setUmName($profileData->military->militaryUnit->name)
             ;
 
             return $profile;
         });
-    }
-
-    /**
-     * @return int
-     */
-    public function getSemaine(): int
-    {
-        return $this->semaine;
     }
 
     /**
@@ -174,6 +139,38 @@ class KillsStats
     public function setSemaine(int $semaine): KillsStats
     {
         $this->semaine = $semaine;
+        return $this;
+    }
+
+    /**
+     * @param array $profiles
+     * @return KillsStats
+     * @throws InvalidArgumentException
+     */
+    public function setProfilesAndUmIds(array $profiles): KillsStats
+    {
+        /** @var Profile $profile */
+        foreach ($profiles as $profile) {
+            $profile                           = $this->getProfile($profile);
+            $this->profiles[$profile->getId()] = $profile;
+            $this->umIds[$profile->getUmId()]  = $profile->getUmName();
+        }
+        return $this;
+    }
+
+    /**
+     * @param $value
+     * @return KillsStats
+     */
+    public function setCookie($value): KillsStats
+    {
+        $setCookie = new SetCookie();
+        $setCookie->setPath('/');
+        $setCookie->setDomain('.erepublik.com');
+        $setCookie->setName('erpk');
+        $setCookie->setValue($value);
+        $this->cookie = new CookieJar();
+        $this->cookie->setCookie($setCookie);
         return $this;
     }
 }

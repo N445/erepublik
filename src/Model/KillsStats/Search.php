@@ -51,14 +51,14 @@ class Search
      */
     public function setProfiles($profiles): Search
     {
-        $this->profiles = str_replace("\r", '', explode(PHP_EOL, $profiles));
+        $this->profiles = $profiles;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getSemaine(): int
+    public function getSemaine()
     {
         return $this->semaine;
     }
