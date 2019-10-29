@@ -4,6 +4,7 @@ namespace App\Form\KillsStats;
 
 use App\Model\KillsStats\Search;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +17,12 @@ class SearchType extends AbstractType
         $builder
             ->add('cookie')
             ->add('profiles', TextareaType::class)
+            ->add('semaine', ChoiceType::class, [
+                'choices' => [
+                    'Cette semaine'      => 0,
+                    'Semaine précédente' => 1,
+                ],
+            ])
         ;
     }
 

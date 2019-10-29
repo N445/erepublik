@@ -15,6 +15,11 @@ class Search
     private $profiles;
 
     /**
+     * @var integer
+     */
+    private $semaine;
+
+    /**
      * @return string
      */
     public function getCookie()
@@ -50,5 +55,21 @@ class Search
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getSemaine(): int
+    {
+        return $this->semaine;
+    }
 
+    /**
+     * @param int $semaine
+     * @return Search
+     */
+    public function setSemaine(int $semaine): Search
+    {
+        $this->semaine = $semaine;
+        return $this;
+    }
 }
