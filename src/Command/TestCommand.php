@@ -32,14 +32,23 @@ class TestCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->setDescription('Test');
+        $this->setDescription('Test');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $this->killsStats->run();
+        $this->killsStats
+            ->setCookie('lrcmaqh5oua9647okpv6876ba1')
+            ->setProfilesAndUmIds([
+                '9541670',
+                '9543015',
+                '9541668',
+                '8612563',
+            ])
+            ->setSemaine(1)
+        ;
+        dump($this->killsStats->run());
         $io->success('Fin.');
 
         return 0;

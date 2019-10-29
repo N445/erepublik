@@ -6,6 +6,9 @@ use App\Clients\Erepublik;
 use App\Model\KillsStats\Profile;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
+use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class KillsStats
 {
@@ -34,13 +37,30 @@ class KillsStats
      */
     private $cookie;
 
+    /**
+     * @var integer
+     */
+    private $semaine = 0;
+
+    /**
+     * @var FilesystemAdapter
+     */
+    private $cache;
+
     public function __construct(Erepublik $erepublikClient)
     {
         $this->erepublikClient = $erepublikClient;
+        $this->cache           = new FilesystemAdapter();
     }
 
     public function run()
     {
+        if (!$this->cookie) {
+            return new \Exception("Cookie not set");
+        }
+        if (empty($this->profiles) || empty($this->umIds)) {
+            return [];
+        }
         $this->browseLeaderBoards();
         return $this->profiles;
     }
@@ -48,21 +68,14 @@ class KillsStats
     /**
      * @param array $profilesIds
      * @return KillsStats
+     * @throws InvalidArgumentException
      */
     public function setProfilesAndUmIds(array $profilesIds): KillsStats
     {
         foreach ($profilesIds as $profilesId) {
-            $profileData = json_decode($this->erepublikClient
-                ->get(sprintf('/fr/main/citizen-profile-json/%s', $profilesId))
-                ->getBody()
-                ->getContents());
-
-            $profile = new Profile();
-            $profile->setId($profilesId)
-                    ->setName($profileData->citizen->name)
-            ;
-            $this->profiles[$profilesId]                           = $profile;
-            $this->umIds[$profileData->military->militaryUnit->id] = $profileData->military->militaryUnit->name;
+            $profile = $this->getProfileById($profilesId);;
+            $this->profiles[$profilesId]      = $profile;
+            $this->umIds[$profile->getUmId()] = $profile->getUmName();
         }
         return $this;
     }
@@ -89,10 +102,17 @@ class KillsStats
     private function getLeaderboards()
     {
         foreach ($this->umIds as $umId => $umName) {
-            yield json_decode($this->erepublikClient
-                ->get(sprintf('/fr/main/leaderboards-kills-aircraft-rankings/11/0/%s/0', $umId), [
-                    'cookies' => $this->cookie,
-                ])->getBody()->getContents())->top;
+            $url      = sprintf('/fr/main/leaderboards-kills-aircraft-rankings/11/%d/%s/0', $this->semaine, $umId);
+            $response = $this->erepublikClient->get($url, [
+                'cookies' => $this->cookie,
+            ]);
+            $data     = json_decode($response->getBody()->getContents());
+            if ("application/json" !== explode(';', $response->getHeader("Content-Type")[0])[0]) {
+                yield [];
+                continue;
+            }
+
+            yield $data->top;
         }
     }
 
@@ -113,5 +133,47 @@ class KillsStats
                 $this->profiles[$score->id]->setKills($score->values)->setMoney();
             }
         }
+    }
+
+    /**
+     * @param $id
+     * @return Profile
+     * @throws InvalidArgumentException
+     */
+    private function getProfileById($id)
+    {
+        return $this->cache->get($id, function (ItemInterface $item) use ($id) {
+            $item->expiresAfter(3600);
+            $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $id));
+            $json        = $response->getBody()->getContents();
+            $profileData = json_decode($json);
+
+            $profile = new Profile();
+            $profile->setId($id)
+                    ->setName($profileData->citizen->name)
+                    ->setUmId($profileData->military->militaryUnit->id)
+                    ->setUmName($profileData->military->militaryUnit->name)
+            ;
+
+            return $profile;
+        });
+    }
+
+    /**
+     * @return int
+     */
+    public function getSemaine(): int
+    {
+        return $this->semaine;
+    }
+
+    /**
+     * @param int $semaine
+     * @return KillsStats
+     */
+    public function setSemaine(int $semaine): KillsStats
+    {
+        $this->semaine = $semaine;
+        return $this;
     }
 }
