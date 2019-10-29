@@ -25,6 +25,16 @@ class Profile
     private $money;
 
     /**
+     * @var integer
+     */
+    private $umId;
+
+    /**
+     * @var string
+     */
+    private $umName;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -100,6 +110,42 @@ class Profile
     public function setMoney(): Profile
     {
         $this->money = $this->kills * 10;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUmId(): int
+    {
+        return $this->umId;
+    }
+
+    /**
+     * @param int $umId
+     * @return Profile
+     */
+    public function setUmId(int $umId): Profile
+    {
+        $this->umId = $umId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUmName(): string
+    {
+        return $this->umName;
+    }
+
+    /**
+     * @param string $umName
+     * @return Profile
+     */
+    public function setUmName(string $umName): Profile
+    {
+        $this->umName = $umName;
         return $this;
     }
 }
