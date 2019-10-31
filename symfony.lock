@@ -102,6 +102,9 @@
             "config/packages/eight_points_guzzle.yaml"
         ]
     },
+    "fzaninotto/faker": {
+        "version": "v1.8.0"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.4.1"
     },

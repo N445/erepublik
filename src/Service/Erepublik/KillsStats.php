@@ -125,7 +125,7 @@ class KillsStats
             }
 
             $profile->setUmId($profileData->military->militaryUnit->id)
-                    ->setUmName($profileData->military->militaryUnit->name)
+                    ->setUmName(trim($profileData->military->militaryUnit->name))
             ;
 
             return $profile;

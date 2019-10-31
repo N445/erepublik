@@ -89,14 +89,6 @@ class Profile
      */
     public function setKills(int $kills): Profile
     {
-        if ($kills < 75) {
-            $this->kills = 0;
-            return $this;
-        }
-        if ($kills > 750) {
-            $this->kills = 750;
-            return $this;
-        }
         $this->kills = $kills;
         return $this;
     }
@@ -114,6 +106,14 @@ class Profile
      */
     public function setMoney(): Profile
     {
+        if ($this->kills < 75) {
+            $this->money = 0;
+            return $this;
+        }
+        if ($this->kills > 750) {
+            $this->money = 7500;
+            return $this;
+        }
         $this->money = $this->kills * 10;
         return $this;
     }
