@@ -2,6 +2,8 @@
 
 namespace App\Model\KillsStats;
 
+use App\Entity\Profile\Profile;
+
 class Search
 {
     /**

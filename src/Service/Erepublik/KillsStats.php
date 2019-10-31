@@ -3,7 +3,13 @@
 namespace App\Service\Erepublik;
 
 use App\Clients\Erepublik;
+use App\Entity\Profile\Profile as ProfileEntity;
+use App\Entity\Profile\UniteMilitaire;
 use App\Model\KillsStats\Profile;
+use App\Repository\Profile\ProfileRepository;
+use App\Repository\Profile\UniteMilitaireRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
 use Psr\Cache\InvalidArgumentException;
@@ -47,10 +53,35 @@ class KillsStats
      */
     private $cache;
 
-    public function __construct(Erepublik $erepublikClient)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var ProfileRepository
+     */
+    private $profileRepository;
+
+    /**
+     * @var UniteMilitaireRepository
+     */
+    private $militaireRepository;
+
+    /**
+     * KillsStats constructor.
+     * @param Erepublik                $erepublikClient
+     * @param EntityManagerInterface   $em
+     * @param ProfileRepository        $profileRepository
+     * @param UniteMilitaireRepository $militaireRepository
+     */
+    public function __construct(Erepublik $erepublikClient, EntityManagerInterface $em, ProfileRepository $profileRepository, UniteMilitaireRepository $militaireRepository)
     {
-        $this->erepublikClient = $erepublikClient;
-        $this->cache           = new FilesystemAdapter();
+        $this->erepublikClient     = $erepublikClient;
+        $this->cache               = new FilesystemAdapter();
+        $this->em                  = $em;
+        $this->profileRepository   = $profileRepository;
+        $this->militaireRepository = $militaireRepository;
     }
 
     public function run()
@@ -63,6 +94,13 @@ class KillsStats
         }
         $this->browseLeaderBoards();
         return $this->profiles;
+    }
+
+    private function browseLeaderBoards()
+    {
+        foreach ($this->getLeaderboards() as $leaderboard) {
+            $this->setProfileKills($leaderboard);
+        }
     }
 
 
@@ -86,13 +124,6 @@ class KillsStats
         }
     }
 
-    private function browseLeaderBoards()
-    {
-        foreach ($this->getLeaderboards() as $leaderboard) {
-            $this->setProfileKills($leaderboard);
-        }
-    }
-
     /**
      * @param $scores
      */
@@ -106,14 +137,18 @@ class KillsStats
     }
 
     /**
-     * @param Profile $profile
-     * @return Profile
+     * @param ProfileEntity $profile
+     * @return ProfileEntity
      * @throws InvalidArgumentException
+     * @throws NonUniqueResultException
      */
-    private function getProfile(Profile $profile)
+    private function getProfile(ProfileEntity $profile)
     {
-        return $this->cache->get($profile->getId(), function (ItemInterface $item) use ($profile) {
+        if ($profileEntity = $this->profileRepository->getProfileByIdentifier($profile->getId())) {
+            return $profileEntity;
+        }
 
+        return $this->cache->get($profile->getId(), function (ItemInterface $item) use ($profile) {
             $item->expiresAfter(3600);
             $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $profile->getId()));
             $json        = $response->getBody()->getContents();
@@ -124,11 +159,44 @@ class KillsStats
                 return $profile;
             }
 
-            $profile->setUmId($profileData->military->militaryUnit->id)
-                    ->setUmName($profileData->military->militaryUnit->name)
-            ;
+            $profile->setUnitemilitaire(
+                $this->getUniteMilitaire(
+                    $profileData->military->militaryUnit->id,
+                    $profileData->military->militaryUnit->name
+                )
+            );
+
+            $this->em->persist($profile);
 
             return $profile;
+        });
+    }
+
+    /**
+     * @param $identifier
+     * @param $name
+     * @return UniteMilitaire|mixed|null
+     * @throws InvalidArgumentException
+     * @throws NonUniqueResultException
+     */
+    private function getUniteMilitaire($identifier, $name)
+    {
+        if ($umEntity = $this->militaireRepository->getUnitemilitaireByIdentifier($identifier)) {
+            return $umEntity;
+        }
+
+        return $this->cache->get($identifier, function (ItemInterface $item) use ($identifier, $name) {
+            $item->expiresAfter(3600);
+
+            $um = new UniteMilitaire();
+
+            $um->setIdentifier($identifier)
+               ->setName($name)
+            ;
+
+            $this->em->persist($um);
+
+            return $um;
         });
     }
 
@@ -149,11 +217,14 @@ class KillsStats
      */
     public function setProfilesAndUmIds(array $profiles): KillsStats
     {
-        /** @var Profile $profile */
+        /** @var ProfileEntity $profile */
         foreach ($profiles as $profile) {
-            $profile                           = $this->getProfile($profile);
-            $this->profiles[$profile->getId()] = $profile;
-            $this->umIds[$profile->getUmId()]  = $profile->getUmName();
+            $profile = $this->getProfile($profile);
+            dump($profile);
+            die;
+
+            $this->profiles[$profile->getIdentifier()]                   = $profile;
+            $this->umIds[$profile->getUnitemilitaire()->getIdentifier()] = $profile->getUnitemilitaire()->getName();
         }
         return $this;
     }
