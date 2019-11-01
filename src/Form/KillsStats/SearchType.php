@@ -25,7 +25,9 @@ class SearchType extends AbstractType
                 ],
             ])
             ->add('file', FileType::class, [
-                'mapped' => false,
+                'mapped'   => false,
+                'required' => false,
+                'help'=>'Si non remplis les données en mémoire serons utilisé'
             ])
         ;
     }

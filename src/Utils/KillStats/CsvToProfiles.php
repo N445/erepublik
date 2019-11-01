@@ -2,8 +2,7 @@
 
 namespace App\Utils\KillStats;
 
-use App\Model\KillsStats\Profile;
-use Symfony\Component\Form\Form;
+use App\Entity\Profile\Profile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CsvToProfiles
@@ -42,7 +41,7 @@ class CsvToProfiles
      */
     public function getProfilesFromCsv($csv)
     {
-        $this->csvFile = $csv->getData();
+        $this->csvFile = $csv;
         $this->csvToArray();
         $this->sanitizeArray();
         $this->clearProfileNotValide();
@@ -55,6 +54,7 @@ class CsvToProfiles
         $this->headers = array_shift($data);
         $this->body    = $data;
     }
+
 
     private function sanitizeArray()
     {
@@ -78,10 +78,9 @@ class CsvToProfiles
     private function getProfileArray()
     {
         return array_map(function ($data) {
-            $profile = new Profile();
-            $profile->setId($data[self::ID]);
+            $profile = new Profile($data[self::ID]);
             if (array_key_exists(self::NAME, $data)) {
-                $profile->setName(!empty($data[self::NAME]) ? $data[self::NAME] : null);
+                $profile->setName($data[self::NAME]);
             }
             return $profile;
         }, $this->validArray);

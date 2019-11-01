@@ -3,12 +3,15 @@
 namespace App\Service\Erepublik;
 
 use App\Clients\Erepublik;
-use App\Model\KillsStats\Profile;
+use App\Entity\KillsStats\Plane;
+use App\Entity\Profile\Profile as ProfileEntity;
+use App\Entity\Profile\UniteMilitaire;
+use App\Repository\Profile\ProfileRepository;
+use App\Repository\Profile\UniteMilitaireRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class KillsStats
 {
@@ -25,12 +28,17 @@ class KillsStats
     /**
      * @var array
      */
+    private $profilesEntities = [];
+
+    /**
+     * @var array
+     */
     private $umIds = [];
 
     /**
      * @var array
      */
-    private $leaderboards = [];
+    private $umEntities = [];
 
     /**
      * @var CookieJar
@@ -47,12 +55,43 @@ class KillsStats
      */
     private $cache;
 
-    public function __construct(Erepublik $erepublikClient)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var ProfileRepository
+     */
+    private $profileRepository;
+
+    /**
+     * @var UniteMilitaireRepository
+     */
+    private $militaireRepository;
+
+    /**
+     * KillsStats constructor.
+     * @param Erepublik                $erepublikClient
+     * @param EntityManagerInterface   $em
+     * @param ProfileRepository        $profileRepository
+     * @param UniteMilitaireRepository $militaireRepository
+     */
+    public function __construct(Erepublik $erepublikClient, EntityManagerInterface $em, ProfileRepository $profileRepository, UniteMilitaireRepository $militaireRepository)
     {
-        $this->erepublikClient = $erepublikClient;
-        $this->cache           = new FilesystemAdapter();
+        $this->erepublikClient     = $erepublikClient;
+        $this->cache               = new FilesystemAdapter();
+        $this->em                  = $em;
+        $this->profileRepository   = $profileRepository;
+        $this->militaireRepository = $militaireRepository;
+        $this->setProfilesEntities();
+        $this->setUmEntities();
     }
 
+    /**
+     * @return array|\Exception
+     * @throws \Exception
+     */
     public function run()
     {
         if (!$this->cookie) {
@@ -62,9 +101,61 @@ class KillsStats
             return [];
         }
         $this->browseLeaderBoards();
+        $this->em->flush();
         return $this->profiles;
     }
 
+    /**
+     * @param int $semaine
+     * @return KillsStats
+     */
+    public function setSemaine(int $semaine): KillsStats
+    {
+        $this->semaine = $semaine;
+        return $this;
+    }
+
+    /**
+     * @param array $profiles
+     * @return KillsStats
+     */
+    public function setProfilesAndUmIds(array $profiles): KillsStats
+    {
+        /** @var ProfileEntity $profile */
+        foreach ($profiles as $profile) {
+            $profile = $this->getProfile($profile);
+
+            $this->profiles[$profile->getIdentifier()]                   = $profile;
+            $this->umIds[$profile->getUnitemilitaire()->getIdentifier()] = $profile->getUnitemilitaire()->getName();
+        }
+        return $this;
+    }
+
+    /**
+     * @param $value
+     * @return KillsStats
+     */
+    public function setCookie($value): KillsStats
+    {
+        $setCookie = new SetCookie();
+        $setCookie->setPath('/');
+        $setCookie->setDomain('.erepublik.com');
+        $setCookie->setName('erpk');
+        $setCookie->setValue($value);
+        $this->cookie = new CookieJar();
+        $this->cookie->setCookie($setCookie);
+        return $this;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function browseLeaderBoards()
+    {
+        foreach ($this->getLeaderboards() as $leaderboard) {
+            $this->setProfileKills($leaderboard);
+        }
+    }
 
     /**
      * @return \Generator
@@ -86,91 +177,99 @@ class KillsStats
         }
     }
 
-    private function browseLeaderBoards()
-    {
-        foreach ($this->getLeaderboards() as $leaderboard) {
-            $this->setProfileKills($leaderboard);
-        }
-    }
-
     /**
      * @param $scores
+     * @throws \Exception
      */
     private function setProfileKills($scores)
     {
         foreach ($scores as $score) {
             if (array_key_exists($score->id, $this->profiles)) {
-                $this->profiles[$score->id]->setKills($score->values)->setMoney();
+                /** @var ProfileEntity $profile */
+                $profile = $this->profiles[$score->id];
+                $profile->addPlane($this->getStatPlane($score));
             }
         }
     }
 
     /**
-     * @param Profile $profile
-     * @return Profile
-     * @throws InvalidArgumentException
+     * @param ProfileEntity $profile
+     * @return ProfileEntity
      */
-    private function getProfile(Profile $profile)
+    private function getProfile(ProfileEntity $profile)
     {
-        return $this->cache->get($profile->getId(), function (ItemInterface $item) use ($profile) {
+        if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
+            return $this->profilesEntities[$profile->getIdentifier()];
+        }
 
-            $item->expiresAfter(3600);
-            $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $profile->getId()));
-            $json        = $response->getBody()->getContents();
-            $profileData = json_decode($json);
-            $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name);
-            if ($profileData->isBanned) {
-                $profile->setValid(false);
-                return $profile;
-            }
-
-            $profile->setUmId($profileData->military->militaryUnit->id)
-                    ->setUmName(trim($profileData->military->militaryUnit->name))
-            ;
-
+        $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $profile->getIdentifier()));
+        $json        = $response->getBody()->getContents();
+        $profileData = json_decode($json);
+        $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name);
+        if ($profileData->isBanned) {
+            $profile->setValid(false);
             return $profile;
-        });
-    }
-
-    /**
-     * @param int $semaine
-     * @return KillsStats
-     */
-    public function setSemaine(int $semaine): KillsStats
-    {
-        $this->semaine = $semaine;
-        return $this;
-    }
-
-    /**
-     * @param array $profiles
-     * @return KillsStats
-     * @throws InvalidArgumentException
-     */
-    public function setProfilesAndUmIds(array $profiles): KillsStats
-    {
-        /** @var Profile $profile */
-        foreach ($profiles as $profile) {
-            $profile                           = $this->getProfile($profile);
-            $this->profiles[$profile->getId()] = $profile;
-            $this->umIds[$profile->getUmId()]  = $profile->getUmName();
         }
-        return $this;
+
+        $profile->setUnitemilitaire(
+            $this->getUniteMilitaire(
+                $profileData->military->militaryUnit->id,
+                $profileData->military->militaryUnit->name
+            )
+        );
+
+        $this->em->persist($profile);
+
+        $this->profilesEntities[$profile->getIdentifier()] = $profile;
+
+        return $profile;
     }
 
     /**
-     * @param $value
-     * @return KillsStats
+     * @param $identifier
+     * @param $name
+     * @return UniteMilitaire|mixed|null
      */
-    public function setCookie($value): KillsStats
+    private function getUniteMilitaire($identifier, $name)
     {
-        $setCookie = new SetCookie();
-        $setCookie->setPath('/');
-        $setCookie->setDomain('.erepublik.com');
-        $setCookie->setName('erpk');
-        $setCookie->setValue($value);
-        $this->cookie = new CookieJar();
-        $this->cookie->setCookie($setCookie);
-        return $this;
+        if (array_key_exists($identifier, $this->umEntities)) {
+            return $this->umEntities[$identifier];
+        }
+
+        $um = new UniteMilitaire();
+
+        $um->setIdentifier($identifier)
+           ->setName($name)
+        ;
+
+        $this->umEntities[$um->getIdentifier()] = $um;
+
+        return $um;
+    }
+
+    private function setProfilesEntities()
+    {
+        array_map(function (ProfileEntity $profile) {
+            $this->profilesEntities[$profile->getIdentifier()] = $profile;
+        }, $this->profileRepository->findAll());
+    }
+
+    private function setUmEntities()
+    {
+        array_map(function (UniteMilitaire $uniteMilitaire) {
+            $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
+        }, $this->militaireRepository->findAll());
+    }
+
+    /**
+     * @param $score
+     * @return Plane
+     * @throws \Exception
+     */
+    private function getStatPlane($score)
+    {
+        $planeStat = new Plane();
+        $planeStat->setKills($score->values)->setMoney();
+        return $planeStat;
     }
 }

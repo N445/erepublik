@@ -2,7 +2,8 @@
 
 namespace App\Utils\KillStats;
 
-use App\Model\KillsStats\Profile;
+use App\Entity\KillsStats\Plane;
+use App\Entity\Profile\Profile;
 
 class ProfilesToCsv
 {
@@ -12,6 +13,7 @@ class ProfilesToCsv
      */
     public function getCsvFromProfiles($profiles)
     {
+        $this->sortByName($profiles);
         $this->sortByUm($profiles);
         $path = __DIR__ . '/../../../var/tmp/export-tmp.csv';
 
@@ -43,19 +45,28 @@ class ProfilesToCsv
      */
     private function getProfileArray(Profile $profile)
     {
+        /** @var Plane $lastStat */
+        $lastStat = $profile->getPlanes()->last();
         return [
-            $profile->getId(),
+            $profile->getIdentifier(),
             $profile->getName(),
-            $profile->getUmName(),
-            $profile->getKills(),
-            $profile->getMoney(),
+            $profile->getUnitemilitaire()->getName(),
+            $lastStat ? $lastStat->getKills() : null,
+            $lastStat ? $lastStat->getMoney() : null,
         ];
+    }
+
+    public function sortByName(&$profiles)
+    {
+        usort($profiles, function (Profile $a, Profile $b) {
+            return $a->getName() <=> $b->getName();
+        });
     }
 
     public function sortByUm(&$profiles)
     {
-        usort($profiles, function(Profile $a, Profile $b) {
-            return $a->getUmName() <=> $b->getUmName();
+        usort($profiles, function (Profile $a, Profile $b) {
+            return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();
         });
     }
 }
