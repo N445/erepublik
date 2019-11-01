@@ -84,16 +84,18 @@ class KillsStats
         $this->em                  = $em;
         $this->profileRepository   = $profileRepository;
         $this->militaireRepository = $militaireRepository;
-        $this->setProfilesEntities();
-        $this->setUmEntities();
     }
 
     /**
+     * @param string          $cookieValue
+     * @param int             $semaine
+     * @param ProfileEntity[] $profileData
      * @return array|\Exception
      * @throws \Exception
      */
-    public function run()
+    public function run(string $cookieValue, int $semaine, array $profileData)
     {
+        $this->initData($cookieValue, $semaine, $profileData);
         if (!$this->cookie) {
             return new \Exception("Cookie not set");
         }
@@ -213,8 +215,7 @@ class KillsStats
 
         $profile->setUnitemilitaire(
             $this->getUniteMilitaire(
-                $profileData->military->militaryUnit->id,
-                $profileData->military->militaryUnit->name
+                $profileData->military->militaryUnit
             )
         );
 
@@ -226,12 +227,13 @@ class KillsStats
     }
 
     /**
-     * @param $identifier
-     * @param $name
+     * @param $dataUniteMilitaire
      * @return UniteMilitaire|mixed|null
      */
-    private function getUniteMilitaire($identifier, $name)
+    private function getUniteMilitaire($dataUniteMilitaire)
     {
+        $identifier = $dataUniteMilitaire->id;
+        $name       = $dataUniteMilitaire->name;
         if (array_key_exists($identifier, $this->umEntities)) {
             return $this->umEntities[$identifier];
         }
@@ -247,15 +249,20 @@ class KillsStats
         return $um;
     }
 
-    private function setProfilesEntities()
+    /**
+     * @param string          $cookieValue
+     * @param int             $semaine
+     * @param ProfileEntity[] $profileData
+     */
+    private function initData(string $cookieValue, int $semaine, array $profileData)
     {
+        $this->setCookie($cookieValue);
+        $this->semaine = $semaine;
+        $this->setProfilesAndUmIds($profileData);
         array_map(function (ProfileEntity $profile) {
             $this->profilesEntities[$profile->getIdentifier()] = $profile;
         }, $this->profileRepository->findAll());
-    }
 
-    private function setUmEntities()
-    {
         array_map(function (UniteMilitaire $uniteMilitaire) {
             $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
         }, $this->militaireRepository->findAll());

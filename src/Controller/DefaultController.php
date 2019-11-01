@@ -51,7 +51,6 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        dump(ProfileProvider::getSmaProfiles());
         return $this->render('default/index.html.twig', [
             'controller_name' => 'DefaultController',
         ]);
@@ -71,11 +70,8 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
             $search->setProfiles($file ? $this->csvToProfiles->getProfilesFromCsv($file) : ProfileProvider::getSmaProfiles());
-            $this->killsStatsService->setProfilesAndUmIds($search->getProfiles())
-                                    ->setCookie($search->getCookie())
-                                    ->setSemaine($search->getSemaine())
-            ;
-            $stats = $this->killsStatsService->run();
+
+            $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine(), $search->getProfiles());
             $file  = $this->profilesToCsv->getCsvFromProfiles($stats);
             $file  = new File($file);
             return $this->file($file, sprintf('export-kill-%s.csv', (new \DateTime("NOW"))->format('d-m-Y')));
