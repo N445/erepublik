@@ -234,6 +234,9 @@ class KillsStats
     {
         $identifier = $dataUniteMilitaire->id;
         $name       = $dataUniteMilitaire->name;
+        dump($identifier, $name, $this->umEntities);
+        die;
+
         if (array_key_exists($identifier, $this->umEntities)) {
             return $this->umEntities[$identifier];
         }
@@ -258,7 +261,6 @@ class KillsStats
     {
         $this->setCookie($cookieValue);
         $this->semaine = $semaine;
-        $this->setProfilesAndUmIds($profileData);
         array_map(function (ProfileEntity $profile) {
             $this->profilesEntities[$profile->getIdentifier()] = $profile;
         }, $this->profileRepository->findAll());
@@ -266,6 +268,8 @@ class KillsStats
         array_map(function (UniteMilitaire $uniteMilitaire) {
             $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
         }, $this->militaireRepository->findAll());
+
+        $this->setProfilesAndUmIds($profileData);
     }
 
     /**

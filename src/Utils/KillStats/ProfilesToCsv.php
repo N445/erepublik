@@ -13,8 +13,7 @@ class ProfilesToCsv
      */
     public function getCsvFromProfiles($profiles)
     {
-        $this->sortByName($profiles);
-        $this->sortByUm($profiles);
+        $this->sort($profiles);
         $path = __DIR__ . '/../../../var/tmp/export-tmp.csv';
 
         $fp = fopen($path, 'w');
@@ -56,15 +55,15 @@ class ProfilesToCsv
         ];
     }
 
-    public function sortByName(&$profiles)
+    private function sort(&$profiles)
     {
-        usort($profiles, function (Profile $a, Profile $b) {
-            return $a->getName() <=> $b->getName();
-        });
-    }
 
-    public function sortByUm(&$profiles)
-    {
+        usort($profiles, function (Profile $a, Profile $b) {
+            if ($a->getPlanes()->count() == 0 || $b->getPlanes()->count() == 0) {
+                return 0;
+            }
+            return $a->getPlanes()->last()->getKills() <=> $b->getPlanes()->last()->getKills();
+        });
         usort($profiles, function (Profile $a, Profile $b) {
             return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();
         });
