@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Form\KillsStats\SearchType;
 use App\Model\KillsStats\Search;
+use App\Repository\KillsStats\PlaneRepository;
+use App\Repository\Profile\ProfileRepository;
 use App\Service\Erepublik\KillsStats;
 use App\Utils\KillStats\CsvToProfiles;
 use App\Utils\KillStats\ProfileProvider;
 use App\Utils\KillStats\ProfilesToCsv;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
@@ -34,16 +37,34 @@ class DefaultController extends AbstractController
     private $profilesToCsv;
 
     /**
+     * @var PlaneRepository
+     */
+    private $planeRepository;
+
+    /**
+     * @var ProfileRepository
+     */
+    private $profileRepository;
+
+    /**
      * DefaultController constructor.
      * @param KillsStats    $killsStats
      * @param CsvToProfiles $csvToProfiles
      * @param ProfilesToCsv $profilesToCsv
      */
-    public function __construct(KillsStats $killsStats, CsvToProfiles $csvToProfiles, ProfilesToCsv $profilesToCsv)
+    public function __construct(
+        KillsStats $killsStats,
+        CsvToProfiles $csvToProfiles,
+        ProfilesToCsv $profilesToCsv,
+        PlaneRepository $planeRepository,
+        ProfileRepository $profileRepository
+    )
     {
         $this->killsStatsService = $killsStats;
         $this->csvToProfiles     = $csvToProfiles;
         $this->profilesToCsv     = $profilesToCsv;
+        $this->planeRepository   = $planeRepository;
+        $this->profileRepository = $profileRepository;
     }
 
     /**

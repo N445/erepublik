@@ -4,11 +4,14 @@ namespace App\Service\Erepublik;
 
 use App\Clients\Erepublik;
 use App\Entity\KillsStats\Plane;
+use App\Entity\Profile\Profile;
 use App\Entity\Profile\Profile as ProfileEntity;
 use App\Entity\Profile\UniteMilitaire;
+use App\Repository\KillsStats\PlaneRepository;
 use App\Repository\Profile\ProfileRepository;
 use App\Repository\Profile\UniteMilitaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -71,19 +74,32 @@ class KillsStats
     private $militaireRepository;
 
     /**
+     * @var PlaneRepository
+     */
+    private $planeRepository;
+
+    /**
      * KillsStats constructor.
      * @param Erepublik                $erepublikClient
      * @param EntityManagerInterface   $em
      * @param ProfileRepository        $profileRepository
      * @param UniteMilitaireRepository $militaireRepository
+     * @param PlaneRepository          $planeRepository
      */
-    public function __construct(Erepublik $erepublikClient, EntityManagerInterface $em, ProfileRepository $profileRepository, UniteMilitaireRepository $militaireRepository)
+    public function __construct(
+        Erepublik $erepublikClient,
+        EntityManagerInterface $em,
+        ProfileRepository $profileRepository,
+        UniteMilitaireRepository $militaireRepository,
+        PlaneRepository $planeRepository
+    )
     {
         $this->erepublikClient     = $erepublikClient;
         $this->cache               = new FilesystemAdapter();
         $this->em                  = $em;
         $this->profileRepository   = $profileRepository;
         $this->militaireRepository = $militaireRepository;
+        $this->planeRepository     = $planeRepository;
     }
 
     /**
@@ -189,7 +205,7 @@ class KillsStats
             if (array_key_exists($score->id, $this->profiles)) {
                 /** @var ProfileEntity $profile */
                 $profile = $this->profiles[$score->id];
-                $profile->addPlane($this->getStatPlane($score));
+                $this->getStatPlane($profile, $score);
             }
         }
     }
@@ -234,8 +250,6 @@ class KillsStats
     {
         $identifier = $dataUniteMilitaire->id;
         $name       = $dataUniteMilitaire->name;
-        dump($identifier, $name, $this->umEntities);
-        die;
 
         if (array_key_exists($identifier, $this->umEntities)) {
             return $this->umEntities[$identifier];
@@ -273,14 +287,31 @@ class KillsStats
     }
 
     /**
-     * @param $score
-     * @return Plane
-     * @throws \Exception
+     * @param ProfileEntity $profile
+     * @param               $score
+     * @return void
+     * @throws NonUniqueResultException
      */
-    private function getStatPlane($score)
+    private function getStatPlane(Profile &$profile, $score)
     {
+        $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', (new \DateTime("NOW"))->getTimestamp()));
+        if($this->semaine == 0){
+            $statsDate = (new \DateTime())->setTimestamp(strtotime('next monday', (new \DateTime("NOW"))->getTimestamp()));
+        }
+        /** @var Plane $planeStat */
+        if ($profile->getId() && $planeStat = $this->planeRepository->getPlaneByDate($profile, $statsDate)) {
+            dump('exist', $planeStat);
+            $planeStat->setKills($score->values)
+                      ->setMoney()
+            ;
+            return;
+        }
         $planeStat = new Plane();
-        $planeStat->setKills($score->values)->setMoney();
-        return $planeStat;
+        $planeStat->setKills($score->values)
+                  ->setMoney()
+                  ->setDate($statsDate)
+        ;
+        $profile->addPlane($planeStat);
+        return;
     }
 }
