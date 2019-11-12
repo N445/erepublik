@@ -33,157 +33,162 @@ class ProfileProvider
             ],
             [
                 self::NAME       => 'Tamashii',
-                self::IDENTIFIER => '9541670',
+                self::IDENTIFIER => '2308405',
             ],
             [
                 self::NAME       => 'NaAaS',
-                self::IDENTIFIER => '9543015',
+                self::IDENTIFIER => '9541670',
             ],
             [
                 self::NAME       => 'Rudak2.1',
-                self::IDENTIFIER => '9541668',
+                self::IDENTIFIER => '9543015',
             ],
             [
                 self::NAME       => 'Claaaa',
-                self::IDENTIFIER => '9307040',
+                self::IDENTIFIER => '9541668',
             ],
             [
                 self::NAME       => 'irios FR',
-                self::IDENTIFIER => '1438754',
+                self::IDENTIFIER => '9307040',
             ],
             [
                 self::NAME       => 'Merlier',
-                self::IDENTIFIER => '8612563',
+                self::IDENTIFIER => '1438754',
             ],
             [
                 self::NAME       => 'Arnwalder',
-                self::IDENTIFIER => '9529479',
+                self::IDENTIFIER => '8612563',
             ],
             [
                 self::NAME       => 'Orbisa',
+                self::IDENTIFIER => '9529479',
+            ],
+            [
+                self::NAME       => 'lamperrouge',
                 self::IDENTIFIER => '9530017',
             ],
-//            [
-//                self::NAME       => 'lamperrouge',
-//                self::IDENTIFIER => '',
-//            ],
             [
                 self::NAME       => 'Gabylll',
-                self::IDENTIFIER => '9530244',
+                self::IDENTIFIER => '9529555',
             ],
             [
                 self::NAME       => 'overpol81',
-                self::IDENTIFIER => '9529481',
+                self::IDENTIFIER => '9530244',
             ],
             [
                 self::NAME       => 'Albert91000',
-                self::IDENTIFIER => '8334433',
+                self::IDENTIFIER => '9529481',
             ],
             [
                 self::NAME       => 'Yoann Crsnr',
-                self::IDENTIFIER => '6847367',
+                self::IDENTIFIER => '8334433',
             ],
             [
                 self::NAME       => 'Skeelu',
-                self::IDENTIFIER => '9035088',
+                self::IDENTIFIER => '6847367',
             ],
             [
                 self::NAME       => 'Virklix',
-                self::IDENTIFIER => '2462340',
+                self::IDENTIFIER => '9035088',
             ],
             [
                 self::NAME       => 'Eporedax',
-                self::IDENTIFIER => '9389609',
+                self::IDENTIFIER => '2462340',
             ],
             [
                 self::NAME       => 'AlexCarter',
-                self::IDENTIFIER => '6428270',
+                self::IDENTIFIER => '9389609',
             ],
             [
                 self::NAME       => 'Theondrus',
-                self::IDENTIFIER => '9474611',
+                self::IDENTIFIER => '6428270',
             ],
             [
                 self::NAME       => 'banana95',
-                self::IDENTIFIER => '9517618',
+                self::IDENTIFIER => '9474611',
             ],
             [
                 self::NAME       => 'Mordgrim',
-                self::IDENTIFIER => '9530465',
+                self::IDENTIFIER => '9517618',
             ],
             [
                 self::NAME       => 'Hugz',
-                self::IDENTIFIER => '1749124',
+                self::IDENTIFIER => '9530465',
             ],
             [
                 self::NAME       => 'miltiados',
-                self::IDENTIFIER => '9537392',
+                self::IDENTIFIER => '1749124',
             ],
             [
                 self::NAME       => 'Lepus Articus',
-                self::IDENTIFIER => '9530868',
+                self::IDENTIFIER => '9537392',
             ],
             [
                 self::NAME       => 'Margougou',
-                self::IDENTIFIER => '9543654',
+                self::IDENTIFIER => '9530868',
             ],
             [
                 self::NAME       => 'Lhinstit',
-                self::IDENTIFIER => '2195175',
+                self::IDENTIFIER => '9543654',
             ],
             [
                 self::NAME       => 'ShivaGanesha',
-                self::IDENTIFIER => '9476649',
+                self::IDENTIFIER => '2195175',
             ],
             [
                 self::NAME       => 'Teddy.',
-                self::IDENTIFIER => '9488939',
+                self::IDENTIFIER => '9476649',
             ],
             [
                 self::NAME       => 'LaMasse',
-                self::IDENTIFIER => '1754843',
+                self::IDENTIFIER => '9488939',
             ],
             [
                 self::NAME       => 'Milanais',
-                self::IDENTIFIER => '9515666',
+                self::IDENTIFIER => '1754843',
             ],
             [
                 self::NAME       => 'Exelles',
-                self::IDENTIFIER => '5294976',
+                self::IDENTIFIER => '9515666',
             ],
             [
                 self::NAME       => 'Tzeench',
-                self::IDENTIFIER => '8309441',
+                self::IDENTIFIER => '5294976',
             ],
             [
                 self::NAME       => 'Plows',
-                self::IDENTIFIER => '9538406',
+                self::IDENTIFIER => '8309441',
             ],
             [
                 self::NAME       => 'Leonardo Grimaldi',
-                self::IDENTIFIER => '9543789',
+                self::IDENTIFIER => '9538406',
             ],
             [
                 self::NAME       => 'Valladaroy',
-                self::IDENTIFIER => '9537298',
+                self::IDENTIFIER => '9543789',
             ],
             [
                 self::NAME       => 'Francis Garnier',
-                self::IDENTIFIER => '7886199',
+                self::IDENTIFIER => '9537298',
             ],
             [
                 self::NAME       => 'Axir4t',
-                self::IDENTIFIER => '9545874',
+                self::IDENTIFIER => '7886199',
             ],
             [
                 self::NAME       => 'ArmagnaX',
-                self::IDENTIFIER => '2308405',
+                self::IDENTIFIER => '9545874',
+            ],
+            [
+                self::NAME       => 'Sushuki',
+                self::IDENTIFIER => '5154443',
             ],
             [
                 self::NAME       => 'Patrador92',
                 self::IDENTIFIER => '9529604',
             ],
         ];
+
     }
 
     /**

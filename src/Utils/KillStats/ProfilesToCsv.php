@@ -57,13 +57,19 @@ class ProfilesToCsv
 
     private function sort(&$profiles)
     {
+        $this->sortUn($profiles);
+        $this->sortDeux($profiles);
+    }
 
+    private function sortUn(&$profiles)
+    {
         usort($profiles, function (Profile $a, Profile $b) {
-            if ($a->getPlanes()->count() == 0 || $b->getPlanes()->count() == 0) {
-                return 0;
-            }
-            return $a->getPlanes()->last()->getKills() <=> $b->getPlanes()->last()->getKills();
+            return $a->getName() <=> $b->getName();
         });
+    }
+
+    private function sortDeux(&$profiles)
+    {
         usort($profiles, function (Profile $a, Profile $b) {
             return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();
         });
