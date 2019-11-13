@@ -300,7 +300,6 @@ class KillsStats
         }
         /** @var Plane $planeStat */
         if ($profile->getId() && $planeStat = $this->planeRepository->getPlaneByDate($profile, $statsDate)) {
-            dump('exist', $planeStat);
             $planeStat->setKills($score->values)
                       ->setMoney()
             ;

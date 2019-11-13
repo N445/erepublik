@@ -1,42 +1,44 @@
-Identifiant,Nom,"Unité militaire","Nombre de kills","Argent à donner"
-9541670,NaAaS," Dragons de Glace Depraves ",545,5450
-9541668,Claaaa," Dragons de Glace Depraves ",194,1940
-5154443,Sushuki," Dragons de Glace Depraves ",1061,7500
-9543015,Rudak2.1," Dragons de Glace Depraves ",450,4500
-9529481,Albert91000,"Armee Imperiale",52,0
-9530017,lamperrouge,"Armee Imperiale",823,7500
-8334433,"Yoann Crsnr","Armee Imperiale",334,3340
-9035088,Virklix,"Armee Imperiale",566,5660
-6847367,Skeelu,"Armee Imperiale",969,7500
-9529479,Orbisa,"Armee Imperiale",677,6770
-9530244,overpol81,"Armee Imperiale",,
-8612563,Arnwalder,"Armee Imperiale",103,1030
-9529555,Gabylll,"Armee Imperiale",41,0
-9307040,"irios FR",CHILLAX,95,950
-1438754,Merlier,CHILLAX,339,3390
-8618432,juliebiro,"Dragons - La buse",130,1300
-3637155,antiochus33,"Dragons - La buse",139,1390
-2308405,Tamashii,"Dragons - La buse",446,4460
-9488939,LaMasse,Fusion,170,1700
-9545874,ArmagnaX,Fusion,216,2160
-7886199,Axir4t,Fusion,326,3260
-9543789,Valladaroy,Fusion,281,2810
-5294976,Tzeench,Fusion,103,1030
-9476649,Teddy.,Fusion,188,1880
-9515666,Exelles,Fusion,823,7500
-2195175,ShivaGanesha,Fusion,,
-9537298,"Francis Garnier",Fusion,,
-8309441,Plows,Fusion,,
-1754843,Milanais,Fusion,189,1890
-9538406,"Leonardo Grimaldi",Fusion,715,7150
-2462340,Eporedax,"Koinmandos Koinmunistes",449,4490
-6428270,Theondrus,"Koinmandos Koinmunistes",2208,7500
-9529604,Patrador92,"Koinmandos Koinmunistes",122,1220
-9389609,AlexCarter,"Koinmandos Koinmunistes",68,0
-9517618,Mordgrim,"Koinmandos Koinmunistes",,
-9530868,Margougou,"Koinmandos Koinmunistes",813,7500
-9474611,banana95,"Koinmandos Koinmunistes",35,0
-9543654,Lhinstit,"Koinmandos Koinmunistes",61,0
-9537392,"Lepus Articus","Koinmandos Koinmunistes",,
-1749124,miltiados,"Koinmandos Koinmunistes",,
-9530465,Hugz,"Koinmandos Koinmunistes",30,0
+Identifiant,Nom,"Unité militaire","Nombre de kills","Argent à donner",url
+9543015,NaAaS," Dragons de Glace Depraves ",450,4500,https://www.erepublik.com/en/citizen/profile/9543015
+9541670,Tamashii," Dragons de Glace Depraves ",545,5450,https://www.erepublik.com/en/citizen/profile/9541670
+5154443,Sushuki," Dragons de Glace Depraves ",1061,7500,https://www.erepublik.com/en/citizen/profile/5154443
+9541668,Rudak2.1," Dragons de Glace Depraves ",194,1940,https://www.erepublik.com/en/citizen/profile/9541668
+9530244,Gabylll,"Armee Imperiale",,,https://www.erepublik.com/en/citizen/profile/9530244
+6847367,"Yoann Crsnr","Armee Imperiale",969,7500,https://www.erepublik.com/en/citizen/profile/6847367
+9035088,Skeelu,"Armee Imperiale",566,5660,https://www.erepublik.com/en/citizen/profile/9035088
+9530017,Orbisa,"Armee Imperiale",823,7500,https://www.erepublik.com/en/citizen/profile/9530017
+8612563,Merlier,"Armee Imperiale",103,1030,https://www.erepublik.com/en/citizen/profile/8612563
+8334433,Albert91000,"Armee Imperiale",334,3340,https://www.erepublik.com/en/citizen/profile/8334433
+9529555,Gabylll,"Armee Imperiale",41,0,https://www.erepublik.com/en/citizen/profile/9529555
+9529479,Arnwalder,"Armee Imperiale",677,6770,https://www.erepublik.com/en/citizen/profile/9529479
+9529481,overpol81,"Armee Imperiale",52,0,https://www.erepublik.com/en/citizen/profile/9529481
+9307040,Claaaa,CHILLAX,95,950,https://www.erepublik.com/en/citizen/profile/9307040
+1438754,"irios FR",CHILLAX,339,3390,https://www.erepublik.com/en/citizen/profile/1438754
+8618432,juliebiro,"Dragons - La buse",130,1300,https://www.erepublik.com/en/citizen/profile/8618432
+3637155,antiochus33,"Dragons - La buse",139,1390,https://www.erepublik.com/en/citizen/profile/3637155
+2308405,ArmagnaX,"Dragons - La buse",446,4460,https://www.erepublik.com/en/citizen/profile/2308405
+9543789,"Leonardo Grimaldi",Fusion,281,2810,https://www.erepublik.com/en/citizen/profile/9543789
+9537298,Valladaroy,Fusion,,,https://www.erepublik.com/en/citizen/profile/9537298
+8309441,Tzeench,Fusion,,,https://www.erepublik.com/en/citizen/profile/8309441
+9488939,Teddy.,Fusion,170,1700,https://www.erepublik.com/en/citizen/profile/9488939
+1754843,LaMasse,Fusion,189,1890,https://www.erepublik.com/en/citizen/profile/1754843
+9545874,Axir4t,Fusion,216,2160,https://www.erepublik.com/en/citizen/profile/9545874
+9476649,ShivaGanesha,Fusion,188,1880,https://www.erepublik.com/en/citizen/profile/9476649
+9515666,Milanais,Fusion,823,7500,https://www.erepublik.com/en/citizen/profile/9515666
+9538406,Plows,Fusion,715,7150,https://www.erepublik.com/en/citizen/profile/9538406
+2195175,Lhinstit,Fusion,,,https://www.erepublik.com/en/citizen/profile/2195175
+5294976,Exelles,Fusion,103,1030,https://www.erepublik.com/en/citizen/profile/5294976
+7886199,"Francis Garnier",Fusion,326,3260,https://www.erepublik.com/en/citizen/profile/7886199
+9537392,miltiados,"Koinmandos Koinmunistes",,,https://www.erepublik.com/en/citizen/profile/9537392
+9543654,Margougou,"Koinmandos Koinmunistes",61,0,https://www.erepublik.com/en/citizen/profile/9543654
+9517618,banana95,"Koinmandos Koinmunistes",,,https://www.erepublik.com/en/citizen/profile/9517618
+9389609,Eporedax,"Koinmandos Koinmunistes",68,0,https://www.erepublik.com/en/citizen/profile/9389609
+2462340,Virklix,"Koinmandos Koinmunistes",449,4490,https://www.erepublik.com/en/citizen/profile/2462340
+1749124,Hugz,"Koinmandos Koinmunistes",,,https://www.erepublik.com/en/citizen/profile/1749124
+6428270,AlexCarter,"Koinmandos Koinmunistes",2208,7500,https://www.erepublik.com/en/citizen/profile/6428270
+9474611,Theondrus,"Koinmandos Koinmunistes",35,0,https://www.erepublik.com/en/citizen/profile/9474611
+9529604,Patrador92,"Koinmandos Koinmunistes",122,1220,https://www.erepublik.com/en/citizen/profile/9529604
+9530868,"Lepus Articus","Koinmandos Koinmunistes",813,7500,https://www.erepublik.com/en/citizen/profile/9530868
+9530465,Mordgrim,"Koinmandos Koinmunistes",30,0,https://www.erepublik.com/en/citizen/profile/9530465
+,,,"Total Kills","Total argent donné"
+,,,"13 761","112 770"
