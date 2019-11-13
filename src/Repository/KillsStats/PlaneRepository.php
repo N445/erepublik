@@ -7,6 +7,7 @@ use App\Entity\Profile\Profile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Plane|null find($id, $lockMode = null, $lockVersion = null)
@@ -37,6 +38,40 @@ class PlaneRepository extends ServiceEntityRepository
                     ->setParameter('to', $date->format('Y-m-d 23:59:59'))
                     ->getQuery()
                     ->getOneOrNullResult()
+            ;
+    }
+
+    /**
+     * @return Plane|null
+     * @throws \Exception
+     */
+    public function getLastOrNextPlanes($isLast = true)
+    {
+        if ($isLast) {
+            $mondayString = 'previous monday';
+        } else {
+            $mondayString = 'next monday';
+        }
+        $monday = (new \DateTime())->setTimestamp(strtotime($mondayString, (new \DateTime("NOW"))->getTimestamp()));
+        return $this->getBaseQuery()
+                    ->andWhere('p.date BETWEEN :from AND :to')
+                    ->setParameter('from', $monday->format('Y-m-d 00:00:00'))
+                    ->setParameter('to', $monday->format('Y-m-d 23:59:59'))
+                    ->getQuery()
+                    ->getResult()
+            ;
+    }
+
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getBaseQuery()
+    {
+        return $this->createQueryBuilder('p')
+                    ->addSelect('profile', 'unitemilitaire')
+                    ->leftJoin('p.profile', 'profile')
+                    ->leftJoin('profile.unitemilitaire', 'unitemilitaire')
             ;
     }
 

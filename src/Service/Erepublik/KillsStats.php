@@ -258,7 +258,7 @@ class KillsStats
         $um = new UniteMilitaire();
 
         $um->setIdentifier($identifier)
-           ->setName($name)
+           ->setName(trim($name))
         ;
 
         $this->umEntities[$um->getIdentifier()] = $um;
@@ -295,7 +295,7 @@ class KillsStats
     private function getStatPlane(Profile &$profile, $score)
     {
         $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', (new \DateTime("NOW"))->getTimestamp()));
-        if($this->semaine == 0){
+        if ($this->semaine == 0) {
             $statsDate = (new \DateTime())->setTimestamp(strtotime('next monday', (new \DateTime("NOW"))->getTimestamp()));
         }
         /** @var Plane $planeStat */

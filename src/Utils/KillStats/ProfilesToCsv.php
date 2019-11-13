@@ -63,8 +63,8 @@ class ProfilesToCsv
             $profile->getIdentifier(),
             $profile->getName(),
             $profile->getUnitemilitaire()->getName(),
-            $lastStat ? $lastStat->getKills() : null,
-            $lastStat ? $lastStat->getMoney() : null,
+            $lastStat ? $lastStat->getKills() : 0,
+            $lastStat ? $lastStat->getMoney() : 0,
             sprintf(self::PROFILE_URL, $profile->getIdentifier()),
         ];
     }
@@ -83,23 +83,20 @@ class ProfilesToCsv
         ]);
     }
 
-    private
-    function sort(&$profiles)
+    private function sort(&$profiles)
     {
         $this->sortUn($profiles);
         $this->sortDeux($profiles);
     }
 
-    private
-    function sortUn(&$profiles)
+    private function sortUn(&$profiles)
     {
         usort($profiles, function (Profile $a, Profile $b) {
             return $a->getName() <=> $b->getName();
         });
     }
 
-    private
-    function sortDeux(&$profiles)
+    private function sortDeux(&$profiles)
     {
         usort($profiles, function (Profile $a, Profile $b) {
             return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();

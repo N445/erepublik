@@ -100,6 +100,7 @@ class DefaultController extends AbstractController
      */
     public function killsStats(Request $request)
     {
+        dump($this->planeRepository->getLastOrNextPlanes());
         $search = new Search();
         $form   = $this->createForm(SearchType::class, $search);
         $form->handleRequest($request);
@@ -115,6 +116,7 @@ class DefaultController extends AbstractController
             $zip     = new ZipArchive;
             $zipName = sprintf(ProfilesToCsv::UPLOAD_DIR, 'export-kills.zip');
             $dateNow = (new \DateTime("NOW"))->format('d-m-Y');
+
 
 
             if ($zip->open($zipName, ZipArchive::OVERWRITE) === true) {
