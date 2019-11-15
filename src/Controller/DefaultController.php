@@ -7,21 +7,15 @@ use App\Model\KillsStats\Search;
 use App\Repository\KillsStats\PlaneRepository;
 use App\Repository\Profile\ProfileRepository;
 use App\Service\Erepublik\KillsStats;
+use App\Utils\FileHelper;
 use App\Utils\KillStats\CsvToProfiles;
-use App\Utils\KillStats\CsvToXls;
 use App\Utils\KillStats\ProfileProvider;
 use App\Utils\KillStats\ProfilesToCsv;
-use DateTime;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use ZipArchive;
 
 class DefaultController extends AbstractController
 {
@@ -52,9 +46,9 @@ class DefaultController extends AbstractController
     private $profileRepository;
 
     /**
-     * @var CsvToXls
+     * @var FileHelper
      */
-    private $csvToXls;
+    private $fileHelper;
 
     /**
      * DefaultController constructor.
@@ -63,7 +57,7 @@ class DefaultController extends AbstractController
      * @param ProfilesToCsv     $profilesToCsv
      * @param PlaneRepository   $planeRepository
      * @param ProfileRepository $profileRepository
-     * @param CsvToXls          $csvToXls
+     * @param FileHelper        $fileHelper
      */
     public function __construct(
         KillsStats $killsStats,
@@ -71,7 +65,7 @@ class DefaultController extends AbstractController
         ProfilesToCsv $profilesToCsv,
         PlaneRepository $planeRepository,
         ProfileRepository $profileRepository,
-        CsvToXls $csvToXls
+        FileHelper $fileHelper
     )
     {
         $this->killsStatsService = $killsStats;
@@ -79,7 +73,7 @@ class DefaultController extends AbstractController
         $this->profilesToCsv     = $profilesToCsv;
         $this->planeRepository   = $planeRepository;
         $this->profileRepository = $profileRepository;
-        $this->csvToXls          = $csvToXls;
+        $this->fileHelper        = $fileHelper;
     }
 
     /**
@@ -109,19 +103,8 @@ class DefaultController extends AbstractController
 
             $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine(), $search->getProfiles());
             $file  = $this->profilesToCsv->getCsvFromProfiles($stats, $search->getSemaine());
-            $file  = new File($file);
-            $xls   = $this->csvToXls->getXls($file);
 
-            $zip     = new ZipArchive;
-            $zipName = sprintf(ProfilesToCsv::UPLOAD_DIR, 'export-kills.zip');
-            $dateNow = (new \DateTime("NOW"))->format('d-m-Y');
-
-            if ($zip->open($zipName, ZipArchive::OVERWRITE) === true) {
-                $zip->addFile($file->getPathname(), sprintf('export-kill-%s.csv', $dateNow));
-                $zip->addFile($xls, sprintf('export-kill-%s.xls', $dateNow));
-                $zip->close();
-            }
-            return $this->file($zipName, sprintf('export-kill-%s.zip', $dateNow));
+            return $this->file($this->fileHelper->getZip($file), sprintf('export-kill-%s.zip', (new \DateTime("NOW"))->format('d-m-Y')));
         }
 
         return $this->render('default/kills-stats.html.twig', [
@@ -129,4 +112,6 @@ class DefaultController extends AbstractController
             'stats' => isset($stats) ? $stats : null,
         ]);
     }
+
+
 }
