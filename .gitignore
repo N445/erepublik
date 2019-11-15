@@ -13,3 +13,4 @@
 !/var/data/**
 /var/cache
 /var/log
+/var/tmp/
