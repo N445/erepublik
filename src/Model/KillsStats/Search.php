@@ -17,7 +17,7 @@ class Search
     private $profiles;
 
     /**
-     * @var integer
+     * @var string
      */
     private $semaine;
 
@@ -58,7 +58,7 @@ class Search
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getSemaine()
     {
@@ -66,10 +66,10 @@ class Search
     }
 
     /**
-     * @param int $semaine
+     * @param string $semaine
      * @return Search
      */
-    public function setSemaine(int $semaine): Search
+    public function setSemaine(string $semaine): Search
     {
         $this->semaine = $semaine;
         return $this;

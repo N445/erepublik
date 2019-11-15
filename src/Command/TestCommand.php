@@ -48,7 +48,6 @@ class TestCommand extends Command
             ])
             ->setSemaine(1)
         ;
-        dump($this->killsStats->run());
         $io->success('Fin.');
 
         return 0;

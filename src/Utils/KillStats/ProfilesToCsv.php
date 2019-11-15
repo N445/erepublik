@@ -4,6 +4,7 @@ namespace App\Utils\KillStats;
 
 use App\Entity\KillsStats\Plane;
 use App\Entity\Profile\Profile;
+use App\Utils\MondayHelper;
 
 class ProfilesToCsv
 {
@@ -17,11 +18,20 @@ class ProfilesToCsv
     private $monneyTotal = 0;
 
     /**
-     * @param Profile[] $profiles
-     * @return string
+     * @var \DateTime
      */
-    public function getCsvFromProfiles($profiles)
+    private $semaine;
+
+
+    /**
+     * @param $profiles
+     * @param $semaine
+     * @return string
+     * @throws \Exception
+     */
+    public function getCsvFromProfiles($profiles, $semaine)
     {
+        $this->semaine = MondayHelper::getSemaineDateTime($semaine);
         $this->sort($profiles);
         $path = sprintf(self::UPLOAD_DIR, self::UPLOAD_CSV);
 
@@ -56,7 +66,7 @@ class ProfilesToCsv
     private function getProfileArray(Profile $profile)
     {
         /** @var Plane $lastStat */
-        $lastStat          = $profile->getPlanes()->last();
+        $lastStat = $this->getCurrentStat($profile);
         $this->killsTotal  = $this->killsTotal + ($lastStat ? $lastStat->getKills() : 0);
         $this->monneyTotal = $this->monneyTotal + ($lastStat ? $lastStat->getMoney() : 0);
         return [
@@ -67,6 +77,19 @@ class ProfilesToCsv
             $lastStat ? $lastStat->getMoney() : 0,
             sprintf(self::PROFILE_URL, $profile->getIdentifier()),
         ];
+    }
+
+    /**
+     * @param Profile $profile
+     * @return Plane|mixed
+     */
+    private function getCurrentStat(Profile $profile)
+    {
+        foreach ($profile->getPlanes() as $plane) {
+            if ($plane->getDate()->format('d/m/Y') === $this->semaine->format('d/m/Y')) {
+                return $plane;
+            }
+        }
     }
 
     private function getFooter(&$fp)

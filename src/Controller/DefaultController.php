@@ -108,15 +108,13 @@ class DefaultController extends AbstractController
             $search->setProfiles($file ? $this->csvToProfiles->getProfilesFromCsv($file) : ProfileProvider::getSmaProfiles());
 
             $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine(), $search->getProfiles());
-            $file  = $this->profilesToCsv->getCsvFromProfiles($stats);
+            $file  = $this->profilesToCsv->getCsvFromProfiles($stats, $search->getSemaine());
             $file  = new File($file);
             $xls   = $this->csvToXls->getXls($file);
 
             $zip     = new ZipArchive;
             $zipName = sprintf(ProfilesToCsv::UPLOAD_DIR, 'export-kills.zip');
             $dateNow = (new \DateTime("NOW"))->format('d-m-Y');
-
-
 
             if ($zip->open($zipName, ZipArchive::OVERWRITE) === true) {
                 $zip->addFile($file->getPathname(), sprintf('export-kill-%s.csv', $dateNow));
