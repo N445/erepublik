@@ -100,7 +100,6 @@ class DefaultController extends AbstractController
      */
     public function killsStats(Request $request)
     {
-        dump($this->planeRepository->getLastOrNextPlanes());
         $search = new Search();
         $form   = $this->createForm(SearchType::class, $search);
         $form->handleRequest($request);
