@@ -8,7 +8,7 @@ use App\Utils\MondayHelper;
 
 class ProfilesToCsv
 {
-    const PROFILE_URL = "https://www.erepublik.com/fr/economy/donate-money/%s";
+    const PROFILE_URL = "https://www.erepublik.com/en/economy/donate-money/%s";
     const UPLOAD_DIR  = __DIR__ . '/../../../var/tmp/%s';
     const UPLOAD_CSV  = 'export-tmp.csv';
     const UPLOAD_XLS  = 'export-tmp.xls';
