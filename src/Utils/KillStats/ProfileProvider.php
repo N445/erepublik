@@ -187,6 +187,10 @@ class ProfileProvider
                 self::NAME       => 'Patrador92',
                 self::IDENTIFIER => '9529604',
             ],
+            [
+                self::NAME       => 'Shirozaru',
+                self::IDENTIFIER => '1440049',
+            ],
         ];
 
     }
