@@ -2,9 +2,13 @@
 
 namespace App\Utils\KillStats;
 
+use App\Clients\Erepublik;
 use App\Entity\KillsStats\Plane;
 use App\Entity\Profile\Profile;
 use App\Utils\MondayHelper;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Cookie\SetCookie;
+use Symfony\Component\DomCrawler\Crawler;
 
 class ProfilesToCsv
 {
@@ -22,6 +26,26 @@ class ProfilesToCsv
      */
     private $semaine;
 
+    /**
+     * @var string
+     */
+    private $cookie;
+
+    /**
+     * @var Erepublik
+     */
+    private $erepublikClient;
+
+    /**
+     * @var float
+     */
+    private $smaMonneytotal;
+
+    public function __construct(Erepublik $erepublikClient)
+    {
+        $this->erepublikClient = $erepublikClient;
+    }
+
 
     /**
      * @param $profiles
@@ -29,9 +53,11 @@ class ProfilesToCsv
      * @return string
      * @throws \Exception
      */
-    public function getCsvFromProfiles($profiles, $semaine)
+    public function getCsvFromProfiles($profiles, $semaine, $cookie)
     {
         $this->semaine = MondayHelper::getSemaineDateTime($semaine);
+        $this->cookie  = $cookie;
+        $this->setSMAMonney();
         $this->sort($profiles);
         $path = sprintf(self::UPLOAD_DIR, self::UPLOAD_CSV);
 
@@ -66,7 +92,7 @@ class ProfilesToCsv
     private function getProfileArray(Profile $profile)
     {
         /** @var Plane $lastStat */
-        $lastStat = $this->getCurrentStat($profile);
+        $lastStat          = $this->getCurrentStat($profile);
         $this->killsTotal  = $this->killsTotal + ($lastStat ? $lastStat->getKills() : 0);
         $this->monneyTotal = $this->monneyTotal + ($lastStat ? $lastStat->getMoney() : 0);
         return [
@@ -92,26 +118,64 @@ class ProfilesToCsv
         }
     }
 
+    /**
+     * @param $fp
+     */
     private function getFooter(&$fp)
     {
+        fputcsv($fp, [null]);
+        fputcsv($fp, [
+            null,
+        ]);
+        fputcsv($fp, [
+            null, null, null,
+            'Total argent SMA',
+            number_format($this->smaMonneytotal, 2, ',', ' '),
+        ]);
         fputcsv($fp, [
             null, null, null,
             'Total Kills',
-            'Total argent donné',
+            number_format($this->killsTotal, 0, ',', ' '),
         ]);
         fputcsv($fp, [
             null, null, null,
-            number_format($this->killsTotal, 0, ',', ' '),
+            'Total argent donné',
             number_format($this->monneyTotal, 0, ',', ' '),
         ]);
+        fputcsv($fp, [
+            null, null, null,
+            'Argent restant',
+            number_format($this->smaMonneytotal - $this->monneyTotal, 2, ',', ' '),
+        ]);
+//        fputcsv($fp, [
+//            null, null,
+//            'Total argent SMA',
+//            'Total Kills',
+//            'Total argent donné',
+//            'Argent restant',
+//        ]);
+
+//        fputcsv($fp, [
+//            null, null,
+//            number_format($this->smaMonneytotal, 2, ',', ' '),
+//            number_format($this->killsTotal, 0, ',', ' '),
+//            number_format($this->monneyTotal, 0, ',', ' '),
+//            number_format($this->smaMonneytotal - $this->monneyTotal, 2, ',', ' '),
+//        ]);
     }
 
+    /**
+     * @param Profile[] $profiles
+     */
     private function sort(&$profiles)
     {
         $this->sortUn($profiles);
         $this->sortDeux($profiles);
     }
 
+    /**
+     * @param Profile[] $profiles
+     */
     private function sortUn(&$profiles)
     {
         usort($profiles, function (Profile $a, Profile $b) {
@@ -119,10 +183,31 @@ class ProfilesToCsv
         });
     }
 
+    /**
+     * @param Profile[] $profiles
+     */
     private function sortDeux(&$profiles)
     {
         usort($profiles, function (Profile $a, Profile $b) {
             return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();
         });
+    }
+
+    private function setSMAMonney()
+    {
+        $setCookie = new SetCookie();
+        $setCookie->setPath('/');
+        $setCookie->setDomain('.erepublik.com');
+        $setCookie->setName('erpk');
+        $setCookie->setValue($this->cookie);
+        $this->cookie = new CookieJar();
+        $this->cookie->setCookie($setCookie);
+
+        $response             = $this->erepublikClient->get('/fr/economy/citizen-accounts/3057326', [
+            'cookies' => $this->cookie,
+        ])->getBody()->getContents()
+        ;
+        $crawler              = new Crawler($response);
+        $this->smaMonneytotal = floatval(trim($crawler->filter('.push_right')->text()));
     }
 }
