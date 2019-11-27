@@ -305,7 +305,7 @@ class KillsStats
      */
     private function getStatPlane(Profile &$profile, $score)
     {
-        if (!$profile->isAlive()) {
+        if (!$profile->getIsAlive()) {
             return;
         }
         $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', (new \DateTime("NOW"))->getTimestamp()));
