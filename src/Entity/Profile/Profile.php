@@ -44,7 +44,7 @@ class Profile
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isAlive = true;
+    private $isAlive;
 
     /**
      * Profile constructor.
@@ -56,6 +56,7 @@ class Profile
         $this->planes     = new ArrayCollection();
         $this->name       = $name;
         $this->identifier = $identifier;
+        $this->isAlive    = true;
     }
 
     /**
