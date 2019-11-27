@@ -163,20 +163,21 @@ class Profile
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isAlive(): bool
+    public function getIsAlive(): ?bool
     {
         return $this->isAlive;
     }
 
     /**
      * @param bool $isAlive
-     * @return Profile
+     * @return $this
      */
-    public function setIsAlive(bool $isAlive): Profile
+    public function setIsAlive(bool $isAlive): self
     {
         $this->isAlive = $isAlive;
+
         return $this;
     }
 }
