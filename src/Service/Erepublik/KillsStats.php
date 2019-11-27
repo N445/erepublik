@@ -221,10 +221,20 @@ class KillsStats
             return $this->profilesEntities[$profile->getIdentifier()];
         }
 
-        $response    = $this->erepublikClient->get(sprintf('/fr/main/citizen-profile-json/%s', $profile->getIdentifier()));
-        $json        = $response->getBody()->getContents();
-        $profileData = json_decode($json);
-        $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name);
+        $profileData = json_decode(
+            $this->erepublikClient
+                ->get(
+                    sprintf('/fr/main/citizen-profile-json/%s'
+                        , $profile->getIdentifier()
+                    )
+                )
+                ->getBody()
+                ->getContents()
+        );
+
+        $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name)
+                ->setIsAlive($profileData->is_alive)
+        ;
         if ($profileData->isBanned) {
             $profile->setValid(false);
             return $profile;
@@ -295,6 +305,9 @@ class KillsStats
      */
     private function getStatPlane(Profile &$profile, $score)
     {
+        if (!$profile->isAlive()) {
+            return;
+        }
         $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', (new \DateTime("NOW"))->getTimestamp()));
         if ($this->semaine == 0) {
             $statsDate = (new \DateTime())->setTimestamp(strtotime('next monday', (new \DateTime("NOW"))->getTimestamp()));

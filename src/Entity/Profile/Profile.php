@@ -42,6 +42,11 @@ class Profile
     private $planes;
 
     /**
+     * @var bool
+     */
+    private $isAlive = true;
+
+    /**
      * Profile constructor.
      * @param $name
      * @param $identifier
@@ -154,6 +159,24 @@ class Profile
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAlive(): bool
+    {
+        return $this->isAlive;
+    }
+
+    /**
+     * @param bool $isAlive
+     * @return Profile
+     */
+    public function setIsAlive(bool $isAlive): Profile
+    {
+        $this->isAlive = $isAlive;
         return $this;
     }
 }

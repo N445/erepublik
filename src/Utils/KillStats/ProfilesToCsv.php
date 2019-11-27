@@ -65,7 +65,11 @@ class ProfilesToCsv
 
         fputcsv($fp, $this->getHeaders());
 
+        /** @var Profile $profile */
         foreach ($profiles as $profile) {
+            if (!$profile->isAlive()) {
+                continue;
+            }
             fputcsv($fp, $this->getProfileArray($profile));
         }
 
