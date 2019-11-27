@@ -233,7 +233,7 @@ class KillsStats
         );
 
         $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name)
-                ->setIsAlive($profileData->is_alive)
+                ->setIsAlive($profileData->citizen->is_alive)
         ;
         if ($profileData->isBanned) {
             $profile->setValid(false);
