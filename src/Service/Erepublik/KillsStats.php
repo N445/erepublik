@@ -217,10 +217,6 @@ class KillsStats
      */
     private function getProfile(ProfileEntity $profile)
     {
-        if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
-            return $this->profilesEntities[$profile->getIdentifier()];
-        }
-
         $profileData = json_decode(
             $this->erepublikClient
                 ->get(
@@ -231,15 +227,17 @@ class KillsStats
                 ->getBody()
                 ->getContents()
         );
+        dump($profile, $profileData);
+//        die;
+
+        if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
+            $this->profilesEntities[$profile->getIdentifier()]->setIsAlive($profileData->citizen->is_alive);
+            return $this->profilesEntities[$profile->getIdentifier()];
+        }
 
         $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name)
                 ->setIsAlive($profileData->citizen->is_alive)
         ;
-
-        if ($profileData->isBanned) {
-            $profile->setValid(false);
-            return $profile;
-        }
 
         $profile->setUnitemilitaire(
             $this->getUniteMilitaire(
