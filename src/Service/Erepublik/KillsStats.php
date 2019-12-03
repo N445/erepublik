@@ -227,8 +227,6 @@ class KillsStats
                 ->getBody()
                 ->getContents()
         );
-        dump($profile, $profileData);
-//        die;
 
         if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
             $this->profilesEntities[$profile->getIdentifier()]->setIsAlive($profileData->citizen->is_alive);
