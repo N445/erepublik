@@ -47,6 +47,11 @@ class Profile
     private $isAlive;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
+    /**
      * Profile constructor.
      * @param $name
      * @param $identifier
@@ -57,6 +62,7 @@ class Profile
         $this->name       = $name;
         $this->identifier = $identifier;
         $this->isAlive    = true;
+        $this->isActive   = true;
     }
 
     /**
@@ -181,4 +187,24 @@ class Profile
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param mixed $isActive
+     * @return Profile
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+
 }
