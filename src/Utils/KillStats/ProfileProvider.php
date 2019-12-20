@@ -203,6 +203,18 @@ class ProfileProvider
                 self::NAME       => 'Hitoyoshi',
                 self::IDENTIFIER => '2852992',
             ],
+            [
+                self::NAME       => 'micbat',
+                self::IDENTIFIER => '2428786',
+            ],
+            [
+                self::NAME       => 'Alexandrin',
+                self::IDENTIFIER => '5177777',
+            ],
+            [
+                self::NAME       => 'Zeerd',
+                self::IDENTIFIER => '9549128',
+            ],
         ];
 
     }
