@@ -215,6 +215,10 @@ class ProfileProvider
                 self::NAME       => 'Zeerd',
                 self::IDENTIFIER => '9549128',
             ],
+            [
+                self::NAME       => 'Polymax',
+                self::IDENTIFIER => '7995080',
+            ],
         ];
 
     }
