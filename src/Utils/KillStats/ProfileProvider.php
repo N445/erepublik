@@ -143,10 +143,10 @@ class ProfileProvider
                 self::NAME       => 'LaMasse',
                 self::IDENTIFIER => '9488939',
             ],
-            [
+            /*[
                 self::NAME       => 'Milanais',
                 self::IDENTIFIER => '1754843',
-            ],
+            ],*/
             [
                 self::NAME       => 'Exelles',
                 self::IDENTIFIER => '9515666',
@@ -179,10 +179,10 @@ class ProfileProvider
                 self::NAME       => 'ArmagnaX',
                 self::IDENTIFIER => '9545874',
             ],
-            [
+            /*[
                 self::NAME       => 'Sushuki',
                 self::IDENTIFIER => '5154443',
-            ],
+            ],*/
             [
                 self::NAME       => 'Patrador92',
                 self::IDENTIFIER => '9529604',
