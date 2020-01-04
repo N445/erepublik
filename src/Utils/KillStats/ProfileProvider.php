@@ -219,6 +219,10 @@ class ProfileProvider
                 self::NAME       => 'Polymax',
                 self::IDENTIFIER => '7995080',
             ],
+            [
+                self::NAME       => 'Keyloraz',
+                self::IDENTIFIER => '8450879',
+            ],
         ];
 
     }
