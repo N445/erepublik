@@ -231,12 +231,13 @@ class KillsStats
         $rankLevel = $profileData->military->militaryData->aircraft->rankNumber;
 
         if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
+            $this->profilesEntities[$profile->getIdentifier()]->setName($profileData->citizen->name);
             $this->profilesEntities[$profile->getIdentifier()]->setIsAlive($profileData->citizen->is_alive);
             $this->profilesEntities[$profile->getIdentifier()]->setIsActive($rankLevel < 44);
             return $this->profilesEntities[$profile->getIdentifier()];
         }
 
-        $profile->setName($profile->getName() ? $profile->getName() : $profileData->citizen->name)
+        $profile->setName($profileData->citizen->name)
                 ->setIsAlive($profileData->citizen->is_alive)
                 ->setIsActive($rankLevel < 44)
         ;
