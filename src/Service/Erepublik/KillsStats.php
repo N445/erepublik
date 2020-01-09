@@ -237,7 +237,7 @@ class KillsStats
             return $this->profilesEntities[$profile->getIdentifier()];
         }
 
-        $profile->setName($profileData->citizen->name)
+        $profile->setName($profileData->citizen->name) 
                 ->setIsAlive($profileData->citizen->is_alive)
                 ->setIsActive($rankLevel < 44)
         ;
