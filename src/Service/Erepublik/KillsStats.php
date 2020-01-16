@@ -310,9 +310,10 @@ class KillsStats
         if (!$profile->getIsAlive()) {
             return;
         }
-        $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', (new \DateTime("NOW"))->getTimestamp()));
+        $now       = new \DateTime("NOW");
+        $statsDate = (new \DateTime())->setTimestamp(strtotime('previous monday', $now->getTimestamp()));
         if ($this->semaine == 0) {
-            $statsDate = (new \DateTime())->setTimestamp(strtotime('next monday', (new \DateTime("NOW"))->getTimestamp()));
+            $statsDate = (new \DateTime())->setTimestamp(strtotime('next monday', $now->getTimestamp()));
         }
         /** @var Plane $planeStat */
         if ($profile->getId() && $planeStat = $this->planeRepository->getPlaneByDate($profile, $statsDate)) {
@@ -325,6 +326,7 @@ class KillsStats
         $planeStat->setKills($score->values)
                   ->setMoney()
                   ->setDate($statsDate)
+                  ->setDateId(sprintf('%s-%s', $statsDate->format('Y'), $statsDate->format('W')))
         ;
         $profile->addPlane($planeStat);
         return;

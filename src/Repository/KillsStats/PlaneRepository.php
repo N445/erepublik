@@ -32,10 +32,9 @@ class PlaneRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
                     ->where('p.profile = :profile')
-                    ->andWhere('p.date BETWEEN :from AND :to')
+                    ->andWhere('p.dateId = :date')
                     ->setParameter('profile', $profile)
-                    ->setParameter('from', $date->format('Y-m-d 00:00:00'))
-                    ->setParameter('to', $date->format('Y-m-d 23:59:59'))
+                    ->setParameter('date', sprintf('%s-%s', $date->format('Y'), $date->format('W')))
                     ->getQuery()
                     ->getOneOrNullResult()
             ;

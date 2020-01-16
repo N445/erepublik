@@ -38,14 +38,20 @@ class Plane
     private $profile;
 
     /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $dateId;
+
+    /**
      * Plane constructor.
      * @throws \Exception
      */
     public function __construct()
     {
-        $this->date  = new \DateTime("NOW");
-        $this->kills = 0;
-        $this->money = 0;
+        $now          = new \DateTime("NOW");
+        $this->date   = $now;
+        $this->kills  = 0;
+        $this->money  = 0;
     }
 
     /**
@@ -137,6 +143,24 @@ class Plane
     {
         $this->profile = $profile;
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateId()
+    {
+        return $this->dateId;
+    }
+
+    /**
+     * @param mixed $dateId
+     * @return Plane
+     */
+    public function setDateId(?string $dateId)
+    {
+        $this->dateId = $dateId;
         return $this;
     }
 }
