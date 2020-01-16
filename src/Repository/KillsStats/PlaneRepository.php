@@ -62,6 +62,18 @@ class PlaneRepository extends ServiceEntityRepository
     }
 
 
+    public function getPlanesStats()
+    {
+        return $this->createQueryBuilder('p')
+                    ->addSelect('profile', 'unitemilitaire')
+                    ->leftJoin('p.profile', 'profile')
+                    ->leftJoin('profile.unitemilitaire', 'unitemilitaire')
+                    ->getQuery()
+                    ->getResult()
+            ;
+    }
+
+
     /**
      * @return QueryBuilder
      */
@@ -71,6 +83,7 @@ class PlaneRepository extends ServiceEntityRepository
                     ->addSelect('profile', 'unitemilitaire')
                     ->leftJoin('p.profile', 'profile')
                     ->leftJoin('profile.unitemilitaire', 'unitemilitaire')
+                    ->orderBy('p.date', 'DESC')
             ;
     }
 

@@ -11,6 +11,7 @@ use App\Utils\FileHelper;
 use App\Utils\KillStats\CsvToProfiles;
 use App\Utils\KillStats\ProfileProvider;
 use App\Utils\KillStats\ProfilesToCsv;
+use App\Utils\KillStats\StatsToCsv;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +52,11 @@ class DefaultController extends AbstractController
     private $fileHelper;
 
     /**
+     * @var StatsToCsv
+     */
+    private $statsToCsv;
+
+    /**
      * DefaultController constructor.
      * @param KillsStats        $killsStats
      * @param CsvToProfiles     $csvToProfiles
@@ -58,6 +64,7 @@ class DefaultController extends AbstractController
      * @param PlaneRepository   $planeRepository
      * @param ProfileRepository $profileRepository
      * @param FileHelper        $fileHelper
+     * @param StatsToCsv        $statsToCsv
      */
     public function __construct(
         KillsStats $killsStats,
@@ -65,7 +72,8 @@ class DefaultController extends AbstractController
         ProfilesToCsv $profilesToCsv,
         PlaneRepository $planeRepository,
         ProfileRepository $profileRepository,
-        FileHelper $fileHelper
+        FileHelper $fileHelper,
+        StatsToCsv $statsToCsv
     )
     {
         $this->killsStatsService = $killsStats;
@@ -74,6 +82,7 @@ class DefaultController extends AbstractController
         $this->planeRepository   = $planeRepository;
         $this->profileRepository = $profileRepository;
         $this->fileHelper        = $fileHelper;
+        $this->statsToCsv        = $statsToCsv;
     }
 
     /**
@@ -113,5 +122,14 @@ class DefaultController extends AbstractController
         ]);
     }
 
-
+    /**
+     * Création de la route "Downloads stats"
+     * @Route("/downloads-stats", name="DOWNLOADS_STATS", methods={"GET"})
+     * @param Request $request
+     * @return Response
+     */
+    public function downloadsStats(Request $request)
+    {
+        return $this->file($this->statsToCsv->getCsvFromStats());
+    }
 }
