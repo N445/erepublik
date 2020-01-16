@@ -9,7 +9,7 @@ use App\Repository\KillsStats\PlaneRepository;
 class StatsToCsv
 {
     const UPLOAD_DIR = __DIR__ . '/../../../var/tmp/%s';
-    const UPLOAD_CSV = 'export-kills-%s.csv';
+    const UPLOAD_CSV = 'stats-global-kills-%s.csv';
 
     /**
      * @var PlaneRepository
