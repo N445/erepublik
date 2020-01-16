@@ -69,6 +69,9 @@ class PlaneRepository extends ServiceEntityRepository
                     ->leftJoin('p.profile', 'profile')
                     ->leftJoin('profile.unitemilitaire', 'unitemilitaire')
                     ->orderBy('p.date', 'DESC')
+                    ->addOrderBy('unitemilitaire.name')
+                    ->addOrderBy('profile.name')
+                    ->addOrderBy('p.kills')
                     ->getQuery()
                     ->getResult()
             ;
