@@ -231,6 +231,10 @@ class ProfileProvider
                 self::NAME       => 'Zitio',
                 self::IDENTIFIER => '1704705',
             ],
+            [
+                self::NAME       => 'Eldgo44',
+                self::IDENTIFIER => '9555342',
+            ],
         ];
 
     }
