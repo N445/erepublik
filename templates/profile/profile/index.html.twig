@@ -12,6 +12,7 @@
             <th>Identifier</th>
             <th>UM</th>
             <th>Vivant / actif</th>
+            <th>Créé le</th>
             <th>actions</th>
         </tr>
         </thead>
@@ -31,6 +32,12 @@
                         <span class="badge badge-success">Oui</span>
                     {% else %}
                         <span class="badge badge-danger">Non</span>
+                    {% endif %}
+                </td>
+{#                <td>{{ dump(profile.createdAt) }}</td>#}
+                <td>
+                    {% if profile.createdAt is not null %}
+                        {{ profile.createdAt|date('d/m/Y H:i:s') }}
                     {% endif %}
                 </td>
                 <td>

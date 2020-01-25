@@ -54,9 +54,15 @@ class Profile
     private $isActive;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
      * Profile constructor.
-     * @param $name
      * @param $identifier
+     * @param $name
+     * @throws \Exception
      */
     public function __construct($identifier = null, $name = null)
     {
@@ -65,6 +71,7 @@ class Profile
         $this->identifier = $identifier;
         $this->isAlive    = true;
         $this->isActive   = true;
+        $this->createdAt  = new \DateTime("NOW");
     }
 
     /**
@@ -205,6 +212,18 @@ class Profile
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
         return $this;
     }
 
