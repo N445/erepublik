@@ -4,16 +4,20 @@ namespace App\Form\Profile;
 
 use App\Entity\Profile\Profile;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileType extends AbstractType
+class ProfileEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('identifier', NumberType::class);
+        $builder
+            ->add('name')
+            ->add('identifier')
+            ->add('isAlive')
+            ->add('isActive')
+            ->add('unitemilitaire')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

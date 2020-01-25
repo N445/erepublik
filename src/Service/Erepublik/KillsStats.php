@@ -232,7 +232,7 @@ class KillsStats
 
         if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
 
-            /** @var Profile $existingProfile */
+            /** @var ProfilePopulator $existingProfile */
             $existingProfile = $this->profilesEntities[$profile->getIdentifier()];
 
             $existingProfile->setName($profileData->citizen->name)

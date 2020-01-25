@@ -5,6 +5,7 @@ namespace App\Controller\Profile;
 use App\Entity\Profile\Profile;
 use App\Form\Profile\ProfileType;
 use App\Repository\Profile\ProfileRepository;
+use App\Service\Erepublik\ProfilePopulator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,17 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProfileController extends AbstractController
 {
+
+    /**
+     * @var ProfilePopulator
+     */
+    private $profilePopulator;
+
+    public function __construct(ProfilePopulator $profilePopulator)
+    {
+        $this->profilePopulator = $profilePopulator;
+    }
+
     /**
      * @Route("/", name="profile_profile_index", methods={"GET"})
      */
@@ -35,6 +47,11 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!$this->profilePopulator->setProfileInformations($profile)) {
+                $this->addFlash('danger', sprintf('L\'identifiant %s n\'est pas valide', $profile->getIdentifier()));
+                return $this->redirectToRoute('profile_profile_new');
+            }
+            $this->addFlash('success', 'Le profile %s (%s) a bien été créé', $profile->getName(), $profile->getIdentifier());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($profile);
             $entityManager->flush();

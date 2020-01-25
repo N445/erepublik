@@ -6,9 +6,11 @@ use App\Entity\KillsStats\Plane;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Profile\ProfileRepository")
+ * @UniqueEntity("identifier")
  */
 class Profile
 {
@@ -56,7 +58,7 @@ class Profile
      * @param $name
      * @param $identifier
      */
-    public function __construct($identifier, $name = null)
+    public function __construct($identifier = null, $name = null)
     {
         $this->planes     = new ArrayCollection();
         $this->name       = $name;
