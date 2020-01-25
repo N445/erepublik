@@ -208,7 +208,7 @@ class KillsStats
      */
     private function getStatPlane(Profile &$profile, $score)
     {
-        if (!$profile->getIsAlive()) {
+        if (!$profile->getIsAlive() || !$profile->getIsActive()) {
             return;
         }
         $now       = new \DateTime("NOW");
