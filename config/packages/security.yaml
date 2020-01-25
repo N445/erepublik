@@ -1,7 +1,7 @@
 security:
-#    encoders:
-#        App\Security\User:
-#            algorithm: auto
+    encoders:
+        App\Security\User:
+            algorithm: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -11,7 +11,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: admin
+                        password: $2y$13$C1cTzoJJFISgeXcfGukZK.PQP7VNnXgONVHj5/ZSAQnzKm35PTiqS
                         roles:
                             - ROLE_ADMIN
     firewalls:

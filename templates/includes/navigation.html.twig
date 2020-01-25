@@ -14,6 +14,13 @@
                     <a class="nav-link" href="{{ path('DOWNLOADS_STATS') }}">Export des stats</a>
                 </li>
             </ul>
+            <ul class="navbar-nav">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item active">
+                        <a class="nav-link btn btn-outline-danger" href="{{ path('app_logout') }}">Deconnexion</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
