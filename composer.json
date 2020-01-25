@@ -8,6 +8,7 @@
         "eightpoints/guzzle-bundle": "^7.6",
         "fzaninotto/faker": "^1.8",
         "phpoffice/phpspreadsheet": "^1.9",
+        "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "4.3.*",
         "symfony/console": "4.3.*",
         "symfony/css-selector": "4.3.*",
@@ -18,7 +19,9 @@
         "symfony/framework-bundle": "4.3.*",
         "symfony/maker-bundle": "^1.14",
         "symfony/orm-pack": "^1.0",
+        "symfony/security-bundle": "4.3.*",
         "symfony/twig-pack": "^1.0",
+        "symfony/validator": "4.3.*",
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {

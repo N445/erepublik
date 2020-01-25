@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile index{% endblock %}
+
+{% block body %}
+    <h1>Profile index</h1>
+    <a href="{{ path('profile_profile_new') }}">Create new</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Identifier</th>
+            <th>UM</th>
+            <th>Vivant / actif</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.name }}</td>
+                <td>{{ profile.identifier }}</td>
+                <td>{{ profile.unitemilitaire.name }}</td>
+                <td>
+                    {% if profile.isAlive %}
+                        <span class="badge badge-success">Oui</span>
+                    {% else %}
+                        <span class="badge badge-danger">Non</span>
+                    {% endif %}
+                    {% if profile.isActive %}
+                        <span class="badge badge-success">Oui</span>
+                    {% else %}
+                        <span class="badge badge-danger">Non</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('profile_profile_show', {'id': profile.id}) }}">show</a>
+                    <a href="{{ path('profile_profile_edit', {'id': profile.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('profile_profile_new') }}">Create new</a>
+{% endblock %}

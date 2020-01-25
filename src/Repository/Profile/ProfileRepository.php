@@ -35,6 +35,22 @@ class ProfileRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param int $identifier
+     * @return Profile|null
+     * @throws NonUniqueResultException
+     */
+    public function getProfilesAdmin()
+    {
+        return $this->createQueryBuilder('p')
+                    ->leftJoin('p.unitemilitaire', 'u')
+                    ->orderBy('u.name', 'ASC')
+                    ->addOrderBy('p.name', 'ASC')
+                    ->getQuery()
+                    ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Profile[] Returns an array of Profile objects
     //  */
