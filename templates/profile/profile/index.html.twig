@@ -37,7 +37,7 @@
 {#                <td>{{ dump(profile.createdAt) }}</td>#}
                 <td>
                     {% if profile.createdAt is not null %}
-                        {{ profile.createdAt|date('d/m/Y H:i:s') }}
+                        {{ profile.createdAt|date('d/m/Y H:i') }}
                     {% endif %}
                 </td>
                 <td>
