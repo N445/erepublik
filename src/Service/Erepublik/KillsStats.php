@@ -27,17 +27,7 @@ class KillsStats
     /**
      * @var array
      */
-    private $profiles = [];
-
-    /**
-     * @var array
-     */
     private $profilesEntities = [];
-
-    /**
-     * @var array
-     */
-    private $umIds = [];
 
     /**
      * @var array
@@ -110,18 +100,33 @@ class KillsStats
      * @return array|\Exception
      * @throws \Exception
      */
-    public function run(string $cookieValue, string $semaine, array $profileData)
+    public function run(string $cookieValue, string $semaine)
     {
-        $this->initData($cookieValue, $semaine, $profileData);
+        $this->initData($cookieValue, $semaine);
         if (!$this->cookie) {
             return new \Exception("Cookie not set");
         }
-        if (empty($this->profiles) || empty($this->umIds)) {
-            return [];
-        }
         $this->browseLeaderBoards();
         $this->em->flush();
-        return $this->profiles;
+        return $this->profilesEntities;
+    }
+
+    /**
+     * @param string          $cookieValue
+     * @param string          $semaine
+     * @param ProfileEntity[] $profileData
+     */
+    private function initData(string $cookieValue, string $semaine)
+    {
+        $this->setCookie($cookieValue);
+        $this->semaine = MondayHelper::getErepublikSemaine($semaine);
+        array_map(function (ProfileEntity $profile) {
+            $this->profilesEntities[$profile->getIdentifier()] = $profile;
+        }, $this->profileRepository->findAll());
+
+        array_map(function (UniteMilitaire $uniteMilitaire) {
+            $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
+        }, $this->militaireRepository->findAll());
     }
 
     /**
@@ -131,22 +136,6 @@ class KillsStats
     public function setSemaine(int $semaine): KillsStats
     {
         $this->semaine = $semaine;
-        return $this;
-    }
-
-    /**
-     * @param array $profiles
-     * @return KillsStats
-     */
-    public function setProfilesAndUmIds(array $profiles): KillsStats
-    {
-        /** @var ProfileEntity $profile */
-        foreach ($profiles as $profile) {
-            $profile = $this->getProfile($profile);
-
-            $this->profiles[$profile->getIdentifier()]                   = $profile;
-            $this->umIds[$profile->getUnitemilitaire()->getIdentifier()] = $profile->getUnitemilitaire()->getName();
-        }
         return $this;
     }
 
@@ -181,7 +170,7 @@ class KillsStats
      */
     private function getLeaderboards()
     {
-        foreach ($this->umIds as $umId => $umName) {
+        foreach ($this->umEntities as $umId => $umName) {
             $url      = sprintf('/fr/main/leaderboards-kills-aircraft-rankings/11/%d/%s/0', $this->semaine, $umId);
             $response = $this->erepublikClient->get($url, [
                 'cookies' => $this->cookie,
@@ -203,115 +192,12 @@ class KillsStats
     private function setProfileKills($scores)
     {
         foreach ($scores as $score) {
-            if (array_key_exists($score->id, $this->profiles)) {
+            if (array_key_exists($score->id, $this->profilesEntities)) {
                 /** @var ProfileEntity $profile */
-                $profile = $this->profiles[$score->id];
+                $profile = $this->profilesEntities[$score->id];
                 $this->getStatPlane($profile, $score);
             }
         }
-    }
-
-    /**
-     * @param ProfileEntity $profile
-     * @return ProfileEntity
-     */
-    private function getProfile(ProfileEntity $profile)
-    {
-        $profileData = json_decode(
-            $this->erepublikClient
-                ->get(
-                    sprintf('/fr/main/citizen-profile-json/%s'
-                        , $profile->getIdentifier()
-                    )
-                )
-                ->getBody()
-                ->getContents()
-        );
-
-        $rankLevel = $profileData->military->militaryData->aircraft->rankNumber;
-
-        if (array_key_exists($profile->getIdentifier(), $this->profilesEntities)) {
-
-            /** @var ProfilePopulator $existingProfile */
-            $existingProfile = $this->profilesEntities[$profile->getIdentifier()];
-
-            $existingProfile->setName($profileData->citizen->name)
-                            ->setIsAlive($profileData->citizen->is_alive)
-                            ->setIsActive($rankLevel < 44)
-                            ->setUnitemilitaire($this->getUniteMilitaire(
-                                $profileData->military->militaryUnit
-                            ))
-            ;
-
-            $profile->setUnitemilitaire(
-                $this->getUniteMilitaire(
-                    $profileData->military->militaryUnit
-                )
-            );
-
-            return $this->profilesEntities[$profile->getIdentifier()];
-        }
-
-        $profile->setName($profileData->citizen->name)
-                ->setIsAlive($profileData->citizen->is_alive)
-                ->setIsActive($rankLevel < 44)
-        ;
-
-        $profile->setUnitemilitaire(
-            $this->getUniteMilitaire(
-                $profileData->military->militaryUnit
-            )
-        );
-
-        $this->em->persist($profile);
-
-        $this->profilesEntities[$profile->getIdentifier()] = $profile;
-
-        return $profile;
-    }
-
-    /**
-     * @param $dataUniteMilitaire
-     * @return UniteMilitaire|mixed|null
-     */
-    private function getUniteMilitaire($dataUniteMilitaire)
-    {
-        $identifier = $dataUniteMilitaire->id;
-        $name       = $dataUniteMilitaire->name;
-
-        if (array_key_exists($identifier, $this->umEntities)) {
-            return $this->umEntities[$identifier];
-        }
-
-        $um = new UniteMilitaire();
-
-        $um->setIdentifier($identifier)
-           ->setName(trim($name))
-        ;
-
-        $this->umEntities[$um->getIdentifier()] = $um;
-
-        return $um;
-    }
-
-    /**
-     * @param string          $cookieValue
-     * @param string          $semaine
-     * @param ProfileEntity[] $profileData
-     */
-    private function initData(string $cookieValue, string $semaine, array $profileData)
-    {
-        $this->setCookie($cookieValue);
-        $this->semaine = MondayHelper::getErepublikSemaine($semaine);
-        array_map(function (ProfileEntity $profile) {
-            $this->profilesEntities[$profile->getIdentifier()] = $profile;
-        }, $this->profileRepository->findAll());
-
-        array_map(function (UniteMilitaire $uniteMilitaire) {
-            $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
-        }, $this->militaireRepository->findAll());
-
-        $this->setProfilesAndUmIds($profileData);
     }
 
     /**

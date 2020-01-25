@@ -33,7 +33,7 @@ class Profile
     private $identifier;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Profile\UniteMilitaire", inversedBy="profiles", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Profile\UniteMilitaire", inversedBy="profiles")
      * @ORM\JoinColumn(nullable=false)
      */
     private $unitemilitaire;

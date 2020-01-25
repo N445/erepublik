@@ -51,7 +51,7 @@ class ProfileController extends AbstractController
                 $this->addFlash('danger', sprintf('L\'identifiant %s n\'est pas valide', $profile->getIdentifier()));
                 return $this->redirectToRoute('profile_profile_new');
             }
-            $this->addFlash('success', 'Le profile %s (%s) a bien été créé', $profile->getName(), $profile->getIdentifier());
+            $this->addFlash('success', sprintf('Le profile %s (%s) a bien été créé', $profile->getName(), $profile->getIdentifier()));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($profile);
             $entityManager->flush();

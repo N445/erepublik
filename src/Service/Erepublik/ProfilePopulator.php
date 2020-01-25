@@ -6,6 +6,8 @@ use App\Clients\Erepublik;
 use App\Entity\Profile\Profile;
 use App\Entity\Profile\UniteMilitaire;
 use App\Repository\Profile\UniteMilitaireRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Exception\ClientException;
 
 class ProfilePopulator
@@ -20,18 +22,31 @@ class ProfilePopulator
      */
     private $umEntities;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var UniteMilitaireRepository
+     */
+    private $militaireRepository;
+
 
     /**
      * Profile constructor.
+     * @param EntityManagerInterface   $em
      * @param Erepublik                $erepublikClient
      * @param UniteMilitaireRepository $militaireRepository
      */
     public function __construct(
+        EntityManagerInterface $em,
         Erepublik $erepublikClient,
         UniteMilitaireRepository $militaireRepository)
     {
-        $this->erepublikClient = $erepublikClient;
-        $this->umEntities      = $militaireRepository->findAll();
+        $this->em                  = $em;
+        $this->erepublikClient     = $erepublikClient;
+        $this->militaireRepository = $militaireRepository;
     }
 
     public function setProfileInformations(Profile &$profile)
@@ -72,13 +87,14 @@ class ProfilePopulator
     /**
      * @param $dataUniteMilitaire
      * @return UniteMilitaire|mixed|null
+     * @throws NonUniqueResultException
      */
     private function getUniteMilitaire($dataUniteMilitaire)
     {
         $identifier = $dataUniteMilitaire->id;
 
-        if (array_key_exists($identifier, $this->umEntities)) {
-            return $this->umEntities[$identifier];
+        if ($um = $this->militaireRepository->getUnitemilitaireByIdentifier($identifier)) {
+            return $um;
         }
 
         $um = new UniteMilitaire();
@@ -88,7 +104,7 @@ class ProfilePopulator
         ;
 
         $this->umEntities[$um->getIdentifier()] = $um;
-
+        $this->em->persist($um);
         return $um;
     }
 }

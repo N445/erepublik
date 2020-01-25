@@ -110,9 +110,8 @@ class DefaultController extends AbstractController
             $file = $form->get('file')->getData();
             $search->setProfiles($file ? $this->csvToProfiles->getProfilesFromCsv($file) : ProfileProvider::getSmaProfiles());
 
-            $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine(), $search->getProfiles());
+            $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine());
             $file  = $this->profilesToCsv->getCsvFromProfiles($stats, $search->getSemaine(), $search->getCookie());
-
             return $this->file($this->fileHelper->getZip($file), sprintf('export-kill-%s.zip', (new \DateTime("NOW"))->format('d-m-Y')));
         }
 
