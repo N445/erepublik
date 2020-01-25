@@ -63,11 +63,14 @@ class ProfilePopulator
                 ->setIsActive($profileData->military->militaryData->aircraft->rankNumber < ProfileHelper::MAX_PLANE_LEVEL)
                 ->setLevel($profileData->citizen->level)
                 ->setPlaneLevel($profileData->military->militaryData->aircraft->rankNumber)
-                ->setStatus($this->getProfileStatus($profileData))
                 ->setUnitemilitaire($this->getUniteMilitaire(
                     $profileData->military->militaryUnit
                 ))
         ;
+
+        if ($profile->getStatus() !== ProfileHelper::DESACTIVE) {
+            $profile->setStatus($this->getProfileStatus($profileData));
+        }
 
         return $profile;
     }

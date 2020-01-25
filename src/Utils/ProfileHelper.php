@@ -9,6 +9,7 @@ class ProfileHelper
     const DEAD            = 'dead';
     const LEVELMAX        = 'levelmax';
     const INACTIVE        = 'inactive';
+    const DESACTIVE      = 'desactive';
 
     public static function getStatusForm()
     {
@@ -35,6 +36,7 @@ class ProfileHelper
             'Inactif'           => self::INACTIVE,
             'Mort'              => self::DEAD,
             'Level max atteint' => self::LEVELMAX,
+            'Désactivé'        => self::DESACTIVE,
         ];
     }
 }

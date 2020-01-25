@@ -12,6 +12,7 @@
             <th>Identifier</th>
             <th>UM</th>
             <th>Vivant / actif</th>
+            <th>Status</th>
             <th>Créé le</th>
             <th>actions</th>
         </tr>
@@ -32,6 +33,19 @@
                         <span class="badge badge-success">Oui</span>
                     {% else %}
                         <span class="badge badge-danger">Non</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if profile.status == constant('App\\Utils\\ProfileHelper::ACTIVE') %}
+                        <span class="badge badge-success">{{ profile.status|getStatusLabel }}</span>
+                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::DEAD') %}
+                        <span class="badge badge-danger">{{ profile.status|getStatusLabel }}</span>
+                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::INACTIVE') %}
+                        <span class="badge badge-warning">{{ profile.status|getStatusLabel }}</span>
+                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::LEVELMAX') %}
+                        <span class="badge badge-info">{{ profile.status|getStatusLabel }}</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ profile.status|getStatusLabel }}</span>
                     {% endif %}
                 </td>
                 <td>

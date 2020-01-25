@@ -3,6 +3,7 @@
 namespace App\Entity\Profile;
 
 use App\Entity\KillsStats\Plane;
+use App\Utils\ProfileHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -87,6 +88,7 @@ class Profile
         $this->isAlive    = true;
         $this->isActive   = true;
         $this->createdAt  = new \DateTime("NOW");
+        $this->status     = ProfileHelper::ACTIVE;
     }
 
     /**
