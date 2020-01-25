@@ -68,8 +68,16 @@ class ProfilePopulator
                 ))
         ;
 
+        if (!$profile->getCreatedAt()) {
+            $profile->setCreatedAt(new \DateTime("NOW"));
+        }
+
+        if (!$profile->getNbPaiementMissed()) {
+            $profile->setNbPaiementMissed(0);
+        }
+
         if ($profile->getStatus() !== ProfileHelper::DESACTIVE) {
-            $profile->setStatus($this->getProfileStatus($profileData));
+            $this->setProfileStatus($profile, $profileData);
         }
 
         return $profile;
@@ -93,15 +101,21 @@ class ProfilePopulator
         }
     }
 
-    private function getProfileStatus($profileData)
+    private function setProfileStatus(Profile &$profile, $profileData)
     {
         if (!$profileData->citizen->is_alive) {
-            return ProfileHelper::DEAD;
+            $profile->setStatus(ProfileHelper::DEAD);
+            return;
         }
         if ($profileData->military->militaryData->aircraft->rankNumber >= ProfileHelper::MAX_PLANE_LEVEL) {
-            return ProfileHelper::LEVELMAX;
+            $profile->setStatus(ProfileHelper::LEVELMAX);
+            return;
         }
-        return ProfileHelper::ACTIVE;
+        if ($profile->getNbPaiementMissed() >= 4) {
+            $profile->setStatus(ProfileHelper::INACTIVE);
+            return;
+        }
+        $profile->setStatus(ProfileHelper::ACTIVE);
     }
 
     /**

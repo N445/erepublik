@@ -75,6 +75,11 @@ class Profile
     private $status;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $nbPaiementMissed;
+
+    /**
      * Profile constructor.
      * @param $identifier
      * @param $name
@@ -82,13 +87,14 @@ class Profile
      */
     public function __construct($identifier = null, $name = null)
     {
-        $this->planes     = new ArrayCollection();
-        $this->name       = $name;
-        $this->identifier = $identifier;
-        $this->isAlive    = true;
-        $this->isActive   = true;
-        $this->createdAt  = new \DateTime("NOW");
-        $this->status     = ProfileHelper::ACTIVE;
+        $this->planes           = new ArrayCollection();
+        $this->name             = $name;
+        $this->identifier       = $identifier;
+        $this->isAlive          = true;
+        $this->isActive         = true;
+        $this->createdAt        = new \DateTime("NOW");
+        $this->status           = ProfileHelper::ACTIVE;
+        $this->nbPaiementMissed = 0;
     }
 
     /**
@@ -276,6 +282,18 @@ class Profile
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getNbPaiementMissed(): ?int
+    {
+        return $this->nbPaiementMissed;
+    }
+
+    public function setNbPaiementMissed(?int $nbPaiementMissed): self
+    {
+        $this->nbPaiementMissed = $nbPaiementMissed;
 
         return $this;
     }

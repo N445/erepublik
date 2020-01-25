@@ -8,56 +8,19 @@
     <table class="table">
         <thead>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Identifier</th>
             <th>UM</th>
-            <th>Vivant / actif</th>
-            <th>Status</th>
+            <th>Vivant / Actif /Status</th>
+            <th>Nb paiement non valide</th>
             <th>Créé le</th>
             <th>actions</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="profiles">
         {% for profile in profiles %}
-            <tr>
-                <td>{{ profile.name }}</td>
-                <td>{{ profile.identifier }}</td>
-                <td>{{ profile.unitemilitaire.name }}</td>
-                <td>
-                    {% if profile.isAlive %}
-                        <span class="badge badge-success">Oui</span>
-                    {% else %}
-                        <span class="badge badge-danger">Non</span>
-                    {% endif %}
-                    {% if profile.isActive %}
-                        <span class="badge badge-success">Oui</span>
-                    {% else %}
-                        <span class="badge badge-danger">Non</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if profile.status == constant('App\\Utils\\ProfileHelper::ACTIVE') %}
-                        <span class="badge badge-success">{{ profile.status|getStatusLabel }}</span>
-                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::DEAD') %}
-                        <span class="badge badge-danger">{{ profile.status|getStatusLabel }}</span>
-                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::INACTIVE') %}
-                        <span class="badge badge-warning">{{ profile.status|getStatusLabel }}</span>
-                    {% elseif profile.status == constant('App\\Utils\\ProfileHelper::LEVELMAX') %}
-                        <span class="badge badge-info">{{ profile.status|getStatusLabel }}</span>
-                    {% else %}
-                        <span class="badge badge-secondary">{{ profile.status|getStatusLabel }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if profile.createdAt is not null %}
-                        {{ profile.createdAt|date('d/m/Y H:i') }}
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('profile_profile_show', {'id': profile.id}) }}">show</a>
-                    <a href="{{ path('profile_profile_edit', {'id': profile.id}) }}">edit</a>
-                </td>
-            </tr>
+            {% include 'includes/profile/row.html.twig' %}
         {% else %}
             <tr>
                 <td colspan="6">no records found</td>

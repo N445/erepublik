@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "eightpoints/guzzle-bundle": "^7.6",
+        "friendsofsymfony/jsrouting-bundle": "^2.5",
         "fzaninotto/faker": "^1.8",
         "phpoffice/phpspreadsheet": "^1.9",
         "sensio/framework-extra-bundle": "^5.5",
