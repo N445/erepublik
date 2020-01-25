@@ -59,6 +59,21 @@ class Profile
     private $createdAt;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $level;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $planeLevel;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $status;
+
+    /**
      * Profile constructor.
      * @param $identifier
      * @param $name
@@ -223,6 +238,42 @@ class Profile
     public function setCreatedAt(?\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?int $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getPlaneLevel(): ?int
+    {
+        return $this->planeLevel;
+    }
+
+    public function setPlaneLevel(?int $planeLevel): self
+    {
+        $this->planeLevel = $planeLevel;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

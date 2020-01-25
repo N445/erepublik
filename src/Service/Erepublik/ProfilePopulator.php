@@ -6,6 +6,7 @@ use App\Clients\Erepublik;
 use App\Entity\Profile\Profile;
 use App\Entity\Profile\UniteMilitaire;
 use App\Repository\Profile\UniteMilitaireRepository;
+use App\Utils\ProfileHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Exception\ClientException;
@@ -57,19 +58,24 @@ class ProfilePopulator
 
         $profileData = json_decode($response->getBody()->getContents());
 
-        $rankLevel = $profileData->military->militaryData->aircraft->rankNumber;
-
         $profile->setName($profileData->citizen->name)
                 ->setIsAlive($profileData->citizen->is_alive)
-                ->setIsActive($rankLevel < 44)
+                ->setIsActive($profileData->military->militaryData->aircraft->rankNumber < ProfileHelper::MAX_PLANE_LEVEL)
+                ->setLevel($profileData->citizen->level)
+                ->setPlaneLevel($profileData->military->militaryData->aircraft->rankNumber)
+                ->setStatus($this->getProfileStatus($profileData))
                 ->setUnitemilitaire($this->getUniteMilitaire(
                     $profileData->military->militaryUnit
                 ))
         ;
 
-        return true;
+        return $profile;
     }
 
+    /**
+     * @param Profile $profile
+     * @return bool|\Psr\Http\Message\ResponseInterface
+     */
     private function profileRequest(Profile $profile)
     {
         try {
@@ -82,6 +88,17 @@ class ProfilePopulator
         } catch (ClientException $exception) {
             return false;
         }
+    }
+
+    private function getProfileStatus($profileData)
+    {
+        if (!$profileData->citizen->is_alive) {
+            return ProfileHelper::DEAD;
+        }
+        if ($profileData->military->militaryData->aircraft->rankNumber >= ProfileHelper::MAX_PLANE_LEVEL) {
+            return ProfileHelper::LEVELMAX;
+        }
+        return ProfileHelper::ACTIVE;
     }
 
     /**

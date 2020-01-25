@@ -11,6 +11,7 @@ use App\Repository\KillsStats\PlaneRepository;
 use App\Repository\Profile\ProfileRepository;
 use App\Repository\Profile\UniteMilitaireRepository;
 use App\Utils\MondayHelper;
+use App\Utils\ProfileHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Cookie\CookieJar;
@@ -112,9 +113,8 @@ class KillsStats
     }
 
     /**
-     * @param string          $cookieValue
-     * @param string          $semaine
-     * @param ProfileEntity[] $profileData
+     * @param string $cookieValue
+     * @param string $semaine
      */
     private function initData(string $cookieValue, string $semaine)
     {
@@ -122,7 +122,9 @@ class KillsStats
         $this->semaine = MondayHelper::getErepublikSemaine($semaine);
         array_map(function (ProfileEntity $profile) {
             $this->profilesEntities[$profile->getIdentifier()] = $profile;
-        }, $this->profileRepository->findAll());
+        }, $this->profileRepository->findBy([
+            'status' => ProfileHelper::ACTIVE,
+        ]));
 
         array_map(function (UniteMilitaire $uniteMilitaire) {
             $this->umEntities[$uniteMilitaire->getIdentifier()] = $uniteMilitaire;
