@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Profile index</h1>
     <a href="{{ path('profile_profile_new') }}">Create new</a>
-    <table class="table">
+    <table class="table table-sm">
         <thead>
         <tr>
             <th></th>
@@ -14,7 +14,9 @@
             <th>UM</th>
 {#            <th>Vivant / Actif / Status</th>#}
             <th>Status</th>
-            <th>Nb paiement non valide</th>
+            <th>Nb absence</th>
+            <th>lvl</th>
+            <th>lvl plane</th>
             <th>Créé le</th>
             <th>actions</th>
         </tr>
@@ -31,4 +33,23 @@
     </table>
 
     <a href="{{ path('profile_profile_new') }}">Create new</a>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+{% endblock %}
+
+{% block javascripts %}
+{#    <script src="{{ asset('node_modules/datatables.net-dt/js/dataTables.dataTables.min.js') }}"></script>#}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('.table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.20/i18n/French.json'
+                }
+            });
+
+        } );
+    </script>
 {% endblock %}

@@ -4,7 +4,11 @@
         <a href="#" class="btn btn-sm btn-warning" data-reset-nb-paiement><i class="fas fa-redo"></i></a>
     </td>
     <td>{{ profile.name }}</td>
-    <td>{{ profile.identifier }}</td>
+    <td>
+        <a href="https://www.erepublik.com/fr/citizen/profile/{{ profile.identifier }}" target="_blank" title="Page de {{ profile.name }}">
+            {{ profile.identifier }}
+        </a>
+    </td>
     <td>{{ profile.unitemilitaire.name }}</td>
     <td>
         {#{% if profile.isAlive %}
@@ -30,6 +34,12 @@
         {% endif %}
     </td>
     <td>{{ profile.nbPaiementMissed }}</td>
+    <td>
+        <span class="badge badge-info">{{ profile.level }}</span>
+    </td>
+    <td>
+        <span class="badge badge-info">{{ profile.planeLevel }}</span>
+    </td>
     <td>
         {% if profile.createdAt is not null %}
             {{ profile.createdAt|date('d/m/Y') }}
