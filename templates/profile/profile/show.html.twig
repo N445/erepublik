@@ -7,26 +7,54 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ profile.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ profile.name }}</td>
-            </tr>
-            <tr>
-                <th>Identifier</th>
-                <td>{{ profile.identifier }}</td>
-            </tr>
-            <tr>
-                <th>IsAlive</th>
-                <td>{{ profile.isAlive ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>IsActive</th>
-                <td>{{ profile.isActive ? 'Yes' : 'No' }}</td>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ profile.name }}</td>
+        </tr>
+        <tr>
+            <th>Identifier</th>
+            <td>{{ profile.identifier }}</td>
+        </tr>
+        <tr>
+            <th>UM</th>
+            <td>{{ profile.unitemilitaire.name }}</td>
+        </tr>
+        <tr>
+            <th>IsAlive</th>
+            <td>{{ profile.isAlive ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+            <th>IsActive</th>
+            <td>{{ profile.isActive ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if profile.status == constant('App\\Utils\\ProfileHelper::ACTIVE') %}
+                    <span class="badge badge-success">{{ profile.status|getStatusLabel }}</span>
+                {% elseif profile.status == constant('App\\Utils\\ProfileHelper::DEAD') %}
+                    <span class="badge badge-danger">{{ profile.status|getStatusLabel }}</span>
+                {% elseif profile.status == constant('App\\Utils\\ProfileHelper::INACTIVE') %}
+                    <span class="badge badge-warning">{{ profile.status|getStatusLabel }}</span>
+                {% elseif profile.status == constant('App\\Utils\\ProfileHelper::LEVELMAX') %}
+                    <span class="badge badge-info">{{ profile.status|getStatusLabel }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">{{ profile.status|getStatusLabel }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Créé le</th>
+            <td>{{ profile.createdAt|date('d/m/Y H:i') }}</td>
+        </tr>
+        <tr>
+            <th>Niveau</th>
+            <td>{{ profile.level }}</td>
+        </tr>
+        <tr>
+            <th>Niveau aerien</th>
+            <td>{{ profile.planeLevel }}</td>
+        </tr>
         </tbody>
     </table>
 

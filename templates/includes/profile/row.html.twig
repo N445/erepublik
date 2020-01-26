@@ -7,7 +7,7 @@
     <td>{{ profile.identifier }}</td>
     <td>{{ profile.unitemilitaire.name }}</td>
     <td>
-        {% if profile.isAlive %}
+        {#{% if profile.isAlive %}
             <span class="badge badge-success">Oui</span>
         {% else %}
             <span class="badge badge-danger">Non</span>
@@ -16,7 +16,7 @@
             <span class="badge badge-success">Oui</span>
         {% else %}
             <span class="badge badge-danger">Non</span>
-        {% endif %}
+        {% endif %}#}
         {% if profile.status == constant('App\\Utils\\ProfileHelper::ACTIVE') %}
             <span class="badge badge-success">{{ profile.status|getStatusLabel }}</span>
         {% elseif profile.status == constant('App\\Utils\\ProfileHelper::DEAD') %}
