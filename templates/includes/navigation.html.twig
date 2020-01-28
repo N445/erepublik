@@ -19,6 +19,10 @@
                     <li class="nav-item active">
                         <a class="nav-link btn btn-outline-danger" href="{{ path('app_logout') }}">Deconnexion</a>
                     </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link btn btn-outline-info" href="{{ path('profile_profile_index') }}">Admin</a>
+                    </li>
                 {% endif %}
             </ul>
         </div>
