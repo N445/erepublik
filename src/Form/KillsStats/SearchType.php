@@ -23,11 +23,11 @@ class SearchType extends AbstractType
                     'Semaine précédente' => MondayHelper::PREV_MONDAY,
                 ],
             ])
-            ->add('file', FileType::class, [
+          /*  ->add('file', FileType::class, [
                 'mapped'   => false,
                 'required' => false,
                 'help'     => 'Si non remplis les données en mémoire serons utilisé',
-            ])
+            ])*/
         ;
     }
 

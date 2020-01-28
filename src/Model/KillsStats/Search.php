@@ -3,6 +3,7 @@
 namespace App\Model\KillsStats;
 
 use App\Entity\Profile\Profile;
+use App\Utils\MondayHelper;
 
 class Search
 {
@@ -20,6 +21,11 @@ class Search
      * @var string
      */
     private $semaine;
+
+    public function __construct()
+    {
+        $this->semaine = MondayHelper::PREV_MONDAY;
+    }
 
     /**
      * @return string
