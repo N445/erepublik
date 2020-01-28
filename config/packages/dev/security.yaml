@@ -1,9 +1,8 @@
 security:
-    providers:
-        app_user_provider:
-            memory:
-                users:
-                    admin:
-                        password: $2y$13$C1cTzoJJFISgeXcfGukZK.PQP7VNnXgONVHj5/ZSAQnzKm35PTiqS
-                        roles:
-                            - ROLE_ADMIN
+  providers:
+    in_memory:
+      memory:
+        users:
+          admin:
+            password: $2y$12$vZ0Tk1.At6Qw90/hM6/mY.nauLbJsxKSA0P0xH.mbKKQBMPSoeQCS
+            roles: 'ROLE_ADMIN'

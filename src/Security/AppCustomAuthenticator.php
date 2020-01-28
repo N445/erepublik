@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,12 +22,16 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     private $urlGenerator;
+
     private $csrfTokenManager;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager)
+    private $passwordEncoder;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->urlGenerator     = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->passwordEncoder  = $passwordEncoder;
     }
 
     public function supports(Request $request)
@@ -38,14 +43,15 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'username' => $request->request->get('username'),
-            'password' => $request->request->get('password'),
+            'username'   => $request->request->get('username'),
+            'password'   => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
             $credentials['username']
-        );
+        )
+        ;
 
         return $credentials;
     }
@@ -71,10 +77,7 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return true;
-        // Check the user's password or other credentials and return true or false
-        // If there are no credentials to check, you can just return true
-        throw new \Exception('TODO: check the credentials inside '.__FILE__);
+        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -82,9 +85,10 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->urlGenerator->generate('HOMEPAGE'));
+
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        return new RedirectResponse($this->urlGenerator->generate('homepage'));
+        throw new \Exception('TODO: provide a valid redirect inside ' . __FILE__);
     }
 
     protected function getLoginUrl()
