@@ -107,8 +107,8 @@ class DefaultController extends AbstractController
         $form   = $this->createForm(SearchType::class, $search);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->get('file')->getData();
-            $search->setProfiles($file ? $this->csvToProfiles->getProfilesFromCsv($file) : ProfileProvider::getSmaProfiles());
+            $search->setProfiles(ProfileProvider::getSmaProfiles());
+//            $search->setProfiles($file ? $this->csvToProfiles->getProfilesFromCsv($file) : ProfileProvider::getSmaProfiles());
 
             $stats = $this->killsStatsService->run($search->getCookie(), $search->getSemaine());
             $file  = $this->profilesToCsv->getCsvFromProfiles($stats, $search->getSemaine(), $search->getCookie());
