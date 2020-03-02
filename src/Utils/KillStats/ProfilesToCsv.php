@@ -206,11 +206,16 @@ class ProfilesToCsv
         $this->cookie = new CookieJar();
         $this->cookie->setCookie($setCookie);
 
-        $response             = $this->erepublikClient->get('/fr/economy/citizen-accounts/3057326', [
+        $response = $this->erepublikClient->get('/fr/economy/citizen-accounts/3057326', [
             'cookies' => $this->cookie,
         ])->getBody()->getContents()
         ;
-        $crawler              = new Crawler($response);
+        $crawler  = new Crawler($response);
+        if (!!$crawler->filter('.push_right')) {
+            $this->smaMonneytotal = -1;
+            return;
+        }
         $this->smaMonneytotal = floatval(trim($crawler->filter('.push_right')->text()));
+
     }
 }
