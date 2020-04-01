@@ -101,7 +101,7 @@ class ProfilesToCsv
         return [
             $profile->getIdentifier(),
             $profile->getName(),
-            $profile->getUnitemilitaire()->getName(),
+            $profile->getUnitemilitaire() ? $profile->getUnitemilitaire()->getName() : null,
             $lastStat ? $lastStat->getKills() : 0,
             $lastStat ? $lastStat->getMoney() : 0,
             sprintf(self::PROFILE_URL, $profile->getIdentifier()),
