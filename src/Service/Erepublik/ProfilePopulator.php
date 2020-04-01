@@ -125,6 +125,9 @@ class ProfilePopulator
      */
     private function getUniteMilitaire($dataUniteMilitaire)
     {
+        if(!$dataUniteMilitaire){
+            return null;
+        }
         $identifier = $dataUniteMilitaire->id;
 
         if ($um = $this->militaireRepository->getUnitemilitaireByIdentifier($identifier)) {

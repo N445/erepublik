@@ -35,7 +35,7 @@ class Profile
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Profile\UniteMilitaire", inversedBy="profiles")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $unitemilitaire;
 
