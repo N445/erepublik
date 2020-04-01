@@ -3,7 +3,6 @@
 namespace App\Utils\KillStats;
 
 use App\Entity\KillsStats\Plane;
-use App\Entity\Profile\Profile;
 use App\Repository\KillsStats\PlaneRepository;
 
 class StatsToCsv
@@ -60,7 +59,7 @@ class StatsToCsv
         return [
             $planeStat->getProfile()->getIdentifier(),
             $planeStat->getProfile()->getName(),
-            $planeStat->getProfile()->getUnitemilitaire()->getName(),
+            $planeStat->getProfile()->getUnitemilitaire() ? $planeStat->getProfile()->getUnitemilitaire()->getName() : null,
             $planeStat->getKills(),
             $planeStat->getMoney(),
             $planeStat->getDate()->format('d-m-Y'),

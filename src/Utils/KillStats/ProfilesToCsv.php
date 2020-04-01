@@ -192,7 +192,13 @@ class ProfilesToCsv
     private function sortDeux(&$profiles)
     {
         usort($profiles, function (Profile $a, Profile $b) {
-            return $a->getUnitemilitaire()->getName() <=> $b->getUnitemilitaire()->getName();
+            if(!$umA = $a->getUnitemilitaire()){
+                return 0;
+            }
+            if(!$umB = $b->getUnitemilitaire()){
+                return 0;
+            }
+            return $umA->getName() <=> $umB->getName();
         });
     }
 
